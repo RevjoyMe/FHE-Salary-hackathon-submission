@@ -5,6 +5,7 @@ import "./globals.css"
 import { Providers } from "./providers"
 import { Scripts } from "./scripts"
 import { InMemoryStorageProvider } from "@/hooks/useInMemoryStorage"
+import { MetaMaskProvider } from "@/hooks/metamask/useMetaMaskProvider"
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -28,9 +29,11 @@ export default function RootLayout({
       <body className={`${dmSans.className} bg-background text-foreground antialiased font-sans`}>
         <Scripts />
         <InMemoryStorageProvider>
-          <Providers>
-            {children}
-          </Providers>
+          <MetaMaskProvider>
+            <Providers>
+              {children}
+            </Providers>
+          </MetaMaskProvider>
         </InMemoryStorageProvider>
       </body>
     </html>

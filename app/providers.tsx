@@ -3,7 +3,7 @@
 import { ReactNode, useRef } from "react";
 import { ethers } from "ethers";
 import { useFhevm } from "@/fhevm/useFhevm";
-import { useMetaMaskProvider } from "@/hooks/metamask/useMetaMaskProvider";
+import { useMetaMask } from "@/hooks/metamask/useMetaMaskProvider";
 import { useMetaMaskEthersSigner } from "@/hooks/metamask/useMetaMaskEthersSigner";
 import { useInMemoryStorage } from "@/hooks/useInMemoryStorage";
 import { FhevmDecryptionSignature } from "@/fhevm/FhevmDecryptionSignature";
@@ -14,7 +14,7 @@ interface ProvidersProps {
 
 export function Providers({ children }: ProvidersProps) {
   // MetaMask provider
-  const { provider, chainId } = useMetaMaskProvider();
+  const { provider, chainId } = useMetaMask();
   
   // MetaMask signer
   const { signer, readonlyProvider } = useMetaMaskEthersSigner();
@@ -48,7 +48,7 @@ export function Providers({ children }: ProvidersProps) {
 
 // Export context values for use in components
 export const useFhevmContext = () => {
-  const { provider, chainId } = useMetaMaskProvider();
+  const { provider, chainId } = useMetaMask();
   const { signer, readonlyProvider } = useMetaMaskEthersSigner();
   
   const { instance, refresh, error, status } = useFhevm({
