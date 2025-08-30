@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { DM_Sans } from "next/font/google"
 import "./globals.css"
 import { Providers } from "./providers"
+import { Scripts } from "./scripts"
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -23,30 +24,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={dmSans.variable}>
-                     <head>
-                 {/* Global polyfill for Relayer SDK */}
-                 <script
-                   dangerouslySetInnerHTML={{
-                     __html: `
-                       if (typeof global === 'undefined') {
-                         window.global = window;
-                       }
-                       if (typeof process === 'undefined') {
-                         window.process = { env: {} };
-                       }
-                     `
-                   }}
-                 />
-                 {/* Relayer SDK Script */}
-                 <script
-                   src="https://unpkg.com/@zama-fhe/relayer-sdk@0.1.2/dist/relayer-sdk.js"
-                   async
-                   onError={() => {
-                     console.warn('Failed to load Relayer SDK from CDN, will use dynamic import');
-                   }}
-                 />
-               </head>
       <body className={`${dmSans.className} bg-background text-foreground antialiased font-sans`}>
+        <Scripts />
         <Providers>
           {children}
         </Providers>
