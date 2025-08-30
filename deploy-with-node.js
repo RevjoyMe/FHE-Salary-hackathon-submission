@@ -43,7 +43,7 @@ async function main() {
   console.log("💾 Contract address saved to contract-address.json");
   
   console.log("🎉 FHE Contract deployment completed successfully!");
-  console.log("🌐 Local Hardhat node is running at сяhttp://127.0.0.1:8545");
+  console.log("🌐 Local Hardhat node is running at http://127.0.0.1:8545");
   console.log("🔗 Contract address:", address);
 }
 
