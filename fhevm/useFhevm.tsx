@@ -1,5 +1,14 @@
-// Import polyfills first
-import '../lib/polyfills';
+// Apply polyfills immediately at module level
+if (typeof window !== 'undefined') {
+  // Global polyfill
+  if (typeof global === 'undefined') {
+    (window as any).global = window;
+  }
+  // Process polyfill
+  if (typeof process === 'undefined') {
+    (window as any).process = { env: {} };
+  }
+}
 
 import { ethers } from "ethers";
 import { useCallback, useEffect, useRef, useState, createContext, useContext, ReactNode } from "react";
@@ -17,6 +26,10 @@ const getRelayerSDK = async () => {
   if (typeof process === 'undefined') {
     (window as any).process = { env: {} };
   }
+  
+  // Force global to be available
+  (window as any).global = (window as any).global || window;
+  (window as any).process = (window as any).process || { env: {} };
   
   return await import("@zama-fhe/relayer-sdk/web");
 };

@@ -24,6 +24,21 @@ const nextConfig = {
         stream: false,
         buffer: false,
       };
+      
+      // Add global polyfill plugin
+      config.plugins.push(
+        new (require('webpack')).DefinePlugin({
+          'global': 'globalThis',
+        })
+      );
+      
+      // Add polyfill for global object
+      config.plugins.push(
+        new (require('webpack')).ProvidePlugin({
+          global: 'globalThis',
+          process: 'process/browser',
+        })
+      );
     }
     return config;
   },
