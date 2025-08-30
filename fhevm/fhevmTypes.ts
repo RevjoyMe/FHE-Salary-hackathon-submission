@@ -3,6 +3,8 @@ import type { FhevmInstanceConfig } from "@zama-fhe/relayer-sdk/web";
 import type { HandleContractPair } from "@zama-fhe/relayer-sdk/bundle";
 import type { DecryptedResults } from "@zama-fhe/relayer-sdk/bundle";
 
+export const dynamic = 'force-dynamic'
+
 export type { FhevmInstance, FhevmInstanceConfig, HandleContractPair, DecryptedResults };
 
 export type FhevmDecryptionSignatureType = {

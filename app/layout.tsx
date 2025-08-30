@@ -1,5 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
+
+export const dynamic = 'force-dynamic'
 import { DM_Sans } from "next/font/google"
 import "./globals.css"
 import { Providers } from "./providers"

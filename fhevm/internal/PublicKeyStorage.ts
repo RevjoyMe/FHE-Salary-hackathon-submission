@@ -1,5 +1,7 @@
 import { openDB, DBSchema, IDBPDatabase } from "idb";
 
+export const dynamic = 'force-dynamic'
+
 type FhevmStoredPublicKey = {
   publicKeyId: string;
   publicKey: Uint8Array;

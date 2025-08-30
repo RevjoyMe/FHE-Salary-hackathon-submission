@@ -1,5 +1,7 @@
 import type { Eip1193Provider } from "ethers";
 
+export const dynamic = 'force-dynamic'
+
 export interface Eip6963ProviderInfo {
   rdns: string;
   uuid: string;

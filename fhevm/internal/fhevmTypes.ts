@@ -1,5 +1,7 @@
 import type { FhevmInstance, FhevmInstanceConfig } from "../fhevmTypes";
 
+export const dynamic = 'force-dynamic'
+
 export type FhevmInitSDKOptions = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tfheParams?: any;

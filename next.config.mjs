@@ -15,7 +15,6 @@ const nextConfig = {
   output: 'standalone',
   trailingSlash: true,
   staticPageGenerationTimeout: 0,
-  generateStaticParams: false,
 
   webpack: (config, { isServer }) => {
     if (!isServer) {

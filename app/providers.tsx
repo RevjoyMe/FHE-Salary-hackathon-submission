@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = 'force-dynamic'
+
 import { ReactNode, useRef } from "react";
 import { ethers } from "ethers";
 import { useFhevm } from "@/fhevm/useFhevm";

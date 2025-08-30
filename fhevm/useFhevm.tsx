@@ -3,6 +3,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { FhevmInstance } from "./fhevmTypes";
 import { createFhevmInstance } from "./internal/fhevm";
 
+export const dynamic = 'force-dynamic'
+
 function _assert(condition: boolean, message?: string): asserts condition {
   if (!condition) {
     const m = message ? `Assertion failed: ${message}` : `Assertion failed.`;

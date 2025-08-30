@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = 'force-dynamic'
+
 import { ethers } from "ethers";
 import { useMetaMask } from "./useMetaMaskProvider";
 import {

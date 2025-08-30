@@ -6,6 +6,8 @@ import {
 } from "./fhevmTypes";
 import { GenericStringStorage } from "./GenericStringStorage";
 
+export const dynamic = 'force-dynamic'
+
 function _timestampNow(): number {
   return Math.floor(Date.now() / 1000);
 }

@@ -1,4 +1,7 @@
 // Polyfills for browser environment
+
+export const dynamic = 'force-dynamic'
+
 if (typeof window !== 'undefined') {
   // Global polyfill
   if (typeof global === 'undefined') {

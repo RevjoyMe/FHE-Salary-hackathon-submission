@@ -5,6 +5,8 @@ import type {
   FhevmLoadSDKType,
   FhevmWindowType,
 } from "./fhevmTypes";
+
+export const dynamic = 'force-dynamic'
 import { isFhevmWindowType, RelayerSDKLoader } from "./RelayerSDKLoader";
 import { publicKeyStorageGet, publicKeyStorageSet } from "./PublicKeyStorage";
 import { FhevmInstance, FhevmInstanceConfig } from "../fhevmTypes";

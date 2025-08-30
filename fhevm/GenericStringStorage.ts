@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 export interface GenericStringStorage {
   getItem(key: string): string | Promise<string | null> | null;
   setItem(key: string, value: string): void | Promise<void>;

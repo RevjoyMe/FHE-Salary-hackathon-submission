@@ -1,6 +1,8 @@
 import { FhevmRelayerSDKType, FhevmWindowType } from "./fhevmTypes";
 import { SDK_CDN_URL } from "./constants";
 
+export const dynamic = 'force-dynamic'
+
 type TraceType = (message?: unknown, ...optionalParams: unknown[]) => void;
 
 export class RelayerSDKLoader {
