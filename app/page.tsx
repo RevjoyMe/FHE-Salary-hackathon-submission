@@ -15,12 +15,7 @@ import {
   Wallet,
 } from "lucide-react"
 import { Button } from "../components/ui/button"
-import EmployeesPage from "./employees/page"
-import PayrollPage from "./payroll/page"
-import KPIPage from "./kpi/page"
-import TasksPage from "./tasks/page"
-import AnalyticsPage from "./analytics/page"
-import SettingsPage from "./settings/page"
+// Import only existing components
 import SalaryPaymentPage from "./salary-payment/page"
 
 export default function HRDashboard() {
@@ -219,6 +214,73 @@ function OverviewPage() {
             <span className="text-sm text-muted-foreground">December salary payments completed</span>
           </div>
         </div>
+      </div>
+    </div>
+  )
+}
+
+// Placeholder components for missing pages
+function EmployeesPage() {
+  return (
+    <div className="p-6">
+      <h1 className="text-3xl font-bold text-foreground mb-6">Employees</h1>
+      <div className="bg-card p-6 rounded-lg border border-border">
+        <p className="text-muted-foreground">Employees page content will be loaded here.</p>
+      </div>
+    </div>
+  )
+}
+
+function PayrollPage() {
+  return (
+    <div className="p-6">
+      <h1 className="text-3xl font-bold text-foreground mb-6">Payroll</h1>
+      <div className="bg-card p-6 rounded-lg border border-border">
+        <p className="text-muted-foreground">Payroll page content will be loaded here.</p>
+      </div>
+    </div>
+  )
+}
+
+function KPIPage() {
+  return (
+    <div className="p-6">
+      <h1 className="text-3xl font-bold text-foreground mb-6">KPI</h1>
+      <div className="bg-card p-6 rounded-lg border border-border">
+        <p className="text-muted-foreground">KPI page content will be loaded here.</p>
+      </div>
+    </div>
+  )
+}
+
+function TasksPage() {
+  return (
+    <div className="p-6">
+      <h1 className="text-3xl font-bold text-foreground mb-6">Tasks</h1>
+      <div className="bg-card p-6 rounded-lg border border-border">
+        <p className="text-muted-foreground">Tasks page content will be loaded here.</p>
+      </div>
+    </div>
+  )
+}
+
+function AnalyticsPage() {
+  return (
+    <div className="p-6">
+      <h1 className="text-3xl font-bold text-foreground mb-6">Analytics</h1>
+      <div className="bg-card p-6 rounded-lg border border-border">
+        <p className="text-muted-foreground">Analytics page content will be loaded here.</p>
+      </div>
+    </div>
+  )
+}
+
+function SettingsPage() {
+  return (
+    <div className="p-6">
+      <h1 className="text-3xl font-bold text-foreground mb-6">Settings</h1>
+      <div className="bg-card p-6 rounded-lg border border-border">
+        <p className="text-muted-foreground">Settings page content will be loaded here.</p>
       </div>
     </div>
   )
