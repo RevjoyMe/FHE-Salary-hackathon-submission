@@ -17,13 +17,6 @@ import {
   Wallet,
 } from "lucide-react"
 import { Button } from "../components/ui/button"
-// Import only existing components
-import dynamicImport from "next/dynamic"
-
-const SalaryPaymentPage = dynamicImport(() => import("./salary-payment/page"), {
-  ssr: false,
-  loading: () => <div className="p-6">Loading Salary Payment...</div>
-})
 
 export default function HRDashboard() {
   const [activeSection, setActiveSection] = useState("overview")
@@ -142,7 +135,7 @@ export default function HRDashboard() {
           {activeSection === "overview" && <OverviewPage />}
           {activeSection === "employees" && <EmployeesPage />}
           {activeSection === "payroll" && <PayrollPage />}
-          {activeSection === "salary-payment" && SalaryPaymentPage && <SalaryPaymentPage />}
+          {activeSection === "salary-payment" && <SalaryPaymentPagePlaceholder />}
           {activeSection === "kpi" && <KPIPage />}
           {activeSection === "tasks" && <TasksPage />}
           {activeSection === "analytics" && <AnalyticsPage />}
@@ -288,6 +281,18 @@ function SettingsPage() {
       <h1 className="text-3xl font-bold text-foreground mb-6">Settings</h1>
       <div className="bg-card p-6 rounded-lg border border-border">
         <p className="text-muted-foreground">Settings page content will be loaded here.</p>
+      </div>
+    </div>
+  )
+}
+
+function SalaryPaymentPagePlaceholder() {
+  return (
+    <div className="p-6">
+      <h1 className="text-3xl font-bold text-foreground mb-6">Salary Payment</h1>
+      <div className="bg-card p-6 rounded-lg border border-border">
+        <p className="text-muted-foreground">Salary Payment page is being loaded...</p>
+        <p className="text-sm text-muted-foreground mt-2">This page will contain FHE-enabled salary payment functionality.</p>
       </div>
     </div>
   )

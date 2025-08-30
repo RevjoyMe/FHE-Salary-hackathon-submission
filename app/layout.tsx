@@ -1,8 +1,8 @@
 import type React from "react"
 import type { Metadata } from "next"
+import { DM_Sans } from "next/font/google"
 
 export const dynamic = 'force-dynamic'
-import { DM_Sans } from "next/font/google"
 import "./globals.css"
 import { Providers } from "./providers"
 import { Scripts } from "./scripts"
@@ -30,16 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={dmSans.variable}>
       <body className={`${dmSans.className} bg-background text-foreground antialiased font-sans`}>
-        <Scripts />
-        <InMemoryStorageProvider>
-          <MetaMaskProvider>
-            <MetaMaskEthersSignerProvider initialMockChains={{}}>
-              <Providers>
-                {children}
-              </Providers>
-            </MetaMaskEthersSignerProvider>
-          </MetaMaskProvider>
-        </InMemoryStorageProvider>
+        {children}
       </body>
     </html>
   )
