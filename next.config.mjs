@@ -27,14 +27,14 @@ const nextConfig = {
       
       // Add global polyfill plugin
       config.plugins.push(
-        new (require('webpack')).DefinePlugin({
+        new config.webpack.DefinePlugin({
           'global': 'globalThis',
         })
       );
       
       // Add polyfill for global object
       config.plugins.push(
-        new (require('webpack')).ProvidePlugin({
+        new config.webpack.ProvidePlugin({
           global: 'globalThis',
           process: 'process/browser',
         })
