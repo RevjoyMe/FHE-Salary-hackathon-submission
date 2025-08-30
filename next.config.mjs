@@ -13,9 +13,9 @@ const nextConfig = {
     esmExternals: 'loose',
   },
 
-  webpack: (config, { isServer, webpack }) => {
+  webpack: (config, { isServer }) => {
     if (!isServer) {
-      // Polyfills for browser environment
+      // Simple polyfills for browser environment
       config.resolve.fallback = {
         ...config.resolve.fallback,
         global: false,
@@ -24,21 +24,6 @@ const nextConfig = {
         stream: false,
         buffer: false,
       };
-      
-      // Add global polyfill plugin
-      config.plugins.push(
-        new webpack.DefinePlugin({
-          'global': 'globalThis',
-        })
-      );
-      
-      // Add polyfill for global object
-      config.plugins.push(
-        new webpack.ProvidePlugin({
-          global: 'globalThis',
-          process: 'process/browser',
-        })
-      );
     }
     return config;
   },
