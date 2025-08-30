@@ -18,7 +18,12 @@ import {
 } from "lucide-react"
 import { Button } from "../components/ui/button"
 // Import only existing components
-import SalaryPaymentPage from "./salary-payment/page"
+import dynamicImport from "next/dynamic"
+
+const SalaryPaymentPage = dynamicImport(() => import("./salary-payment/page"), {
+  ssr: false,
+  loading: () => <div className="p-6">Loading Salary Payment...</div>
+})
 
 export default function HRDashboard() {
   const [activeSection, setActiveSection] = useState("overview")

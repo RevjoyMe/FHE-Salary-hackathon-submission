@@ -1,6 +1,8 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
+export const dynamic = 'force-dynamic'
+
 import { cn } from "../../lib/utils"
 
 const badgeVariants = cva(
