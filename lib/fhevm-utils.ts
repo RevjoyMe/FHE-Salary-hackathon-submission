@@ -38,9 +38,10 @@ const getRelayerSDK = async () => {
 
 // Contract configuration
 export const CONTRACT_ADDRESS = "0x71864F70Dbc4CF7135db460e6d7aAdb8dA627875";
+// Note: ABI uses bytes32 for FHE types (euint64) - ethers.js doesn't understand FHE types directly
 export const CONTRACT_ABI = [
   "function paySalary(address employeeAddress) external payable",
-  "function addEmployee(address employeeAddress, euint64 baseSalary, euint64 kpiBonus, euint64 taskBonus) external",
+  "function addEmployee(address employeeAddress, bytes32 baseSalary, bytes32 kpiBonus, bytes32 taskBonus) external",
   "function registerCompany(string memory name) external",
   "event SalaryPaid(address indexed companyAddress, address indexed employeeAddress, uint256 timestamp)",
   "event EmployeeAdded(address indexed companyAddress, address indexed employeeAddress)",
@@ -172,9 +173,9 @@ export async function addEmployeeWithFHE(
   // Send transaction with encrypted data
   const tx = await contract.addEmployee(
     employeeAddress,
-    encrypted.handles[0], // baseSalary
-    encrypted.handles[1], // kpiBonus
-    encrypted.handles[2], // taskBonus
+    encrypted.handles[0], // baseSalary (bytes32)
+    encrypted.handles[1], // kpiBonus (bytes32)
+    encrypted.handles[2], // taskBonus (bytes32)
     encrypted.inputProof
   );
   
