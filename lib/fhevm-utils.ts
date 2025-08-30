@@ -79,8 +79,12 @@ export async function paySalaryWithFHE(
   // Request account access
   await eth.request({ method: "eth_requestAccounts" });
   
-  // Create signer from MetaMask (no ENS issues with direct signer)
-  const signer = await (new ethers.BrowserProvider(eth)).getSigner();
+  // Create signer from MetaMask with ENS disabled
+  const signer = await (new ethers.BrowserProvider(eth, {
+    chainId: 9746,
+    name: "fhevm-testnet",
+    ensAddress: null // 🚀 отключаем ENS
+  })).getSigner();
   const userAddress = await signer.getAddress();
 
   console.log("Paying salary with FHE encryption...");
@@ -138,8 +142,12 @@ export async function addEmployeeWithFHE(
 
   await eth.request({ method: "eth_requestAccounts" });
   
-  // Create signer from MetaMask (no ENS issues with direct signer)
-  const signer = await (new ethers.BrowserProvider(eth)).getSigner();
+  // Create signer from MetaMask with ENS disabled
+  const signer = await (new ethers.BrowserProvider(eth, {
+    chainId: 9746,
+    name: "fhevm-testnet",
+    ensAddress: null // 🚀 отключаем ENS
+  })).getSigner();
   const userAddress = await signer.getAddress();
 
   console.log("Adding employee with FHE encryption...");
@@ -194,8 +202,12 @@ export async function registerCompany(name: string) {
 
   await eth.request({ method: "eth_requestAccounts" });
   
-  // Create signer from MetaMask (no ENS issues with direct signer)
-  const signer = await (new ethers.BrowserProvider(eth)).getSigner();
+  // Create signer from MetaMask with ENS disabled
+  const signer = await (new ethers.BrowserProvider(eth, {
+    chainId: 9746,
+    name: "fhevm-testnet",
+    ensAddress: null // 🚀 отключаем ENS
+  })).getSigner();
 
   console.log("Registering company:", name);
 
