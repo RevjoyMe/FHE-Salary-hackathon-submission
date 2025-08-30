@@ -2,9 +2,9 @@
 
 import { useState } from "react"
 import { Plus, Filter, Clock, CheckCircle, AlertCircle, User } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { Button } from "../../components/ui/button"
+import { Card, CardContent } from "../../components/ui/card"
+import { Badge } from "../../components/ui/badge"
 
 export default function TasksPage() {
   const [activeTab, setActiveTab] = useState("all")
