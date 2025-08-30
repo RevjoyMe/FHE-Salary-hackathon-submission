@@ -1,5 +1,7 @@
 "use client"
 
+export const dynamic = 'force-dynamic'
+
 import { useState } from "react"
 import {
   ChevronRight,
@@ -135,7 +137,7 @@ export default function HRDashboard() {
           {activeSection === "overview" && <OverviewPage />}
           {activeSection === "employees" && <EmployeesPage />}
           {activeSection === "payroll" && <PayrollPage />}
-          {activeSection === "salary-payment" && <SalaryPaymentPage />}
+          {activeSection === "salary-payment" && SalaryPaymentPage && <SalaryPaymentPage />}
           {activeSection === "kpi" && <KPIPage />}
           {activeSection === "tasks" && <TasksPage />}
           {activeSection === "analytics" && <AnalyticsPage />}
