@@ -14,7 +14,7 @@ import {
   TrendingUp,
   Wallet,
 } from "lucide-react"
-import { Button } from "./components/ui/button"
+import { Button } from "../components/ui/button"
 import EmployeesPage from "./employees/page"
 import PayrollPage from "./payroll/page"
 import KPIPage from "./kpi/page"
