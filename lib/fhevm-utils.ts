@@ -39,9 +39,10 @@ const getRelayerSDK = async () => {
 // Contract configuration
 export const CONTRACT_ADDRESS = "0x71864F70Dbc4CF7135db460e6d7aAdb8dA627875";
 // Note: ABI uses bytes32 for FHE types (euint64) - ethers.js doesn't understand FHE types directly
+// FHE functions require bytes32 handles + bytes proof for encrypted inputs
 export const CONTRACT_ABI = [
-  "function paySalary(address employeeAddress) external payable",
-  "function addEmployee(address employeeAddress, bytes32 baseSalary, bytes32 kpiBonus, bytes32 taskBonus) external",
+  "function paySalary(address employeeAddress, bytes32 encryptedSalary, bytes proof) external",
+  "function addEmployee(address employeeAddress, bytes32 baseSalary, bytes32 kpiBonus, bytes32 taskBonus, bytes proof) external",
   "function registerCompany(string memory name) external",
   "event SalaryPaid(address indexed companyAddress, address indexed employeeAddress, uint256 timestamp)",
   "event EmployeeAdded(address indexed companyAddress, address indexed employeeAddress)",
@@ -94,7 +95,7 @@ export async function paySalaryWithFHE(
   // Create encrypted input for salary amount
   const input = fhevmInstance.createEncryptedInput(CONTRACT_ADDRESS, userAddress);
   
-  // Convert salary to bigint (in wei)
+  // Convert salary to bigint (in wei) and add to encrypted input
   const salaryInWei = ethers.parseEther(salaryAmount.toString());
   input.add64(salaryInWei);
   
@@ -109,7 +110,8 @@ export async function paySalaryWithFHE(
   // Send transaction with encrypted data
   const tx = await contract.paySalary(
     employeeAddress,
-    { value: salaryInWei }
+    encrypted.handles[0], // encryptedSalary (bytes32)
+    encrypted.inputProof  // proof (bytes)
   );
   
   console.log("Transaction sent:", tx.hash);
@@ -176,7 +178,7 @@ export async function addEmployeeWithFHE(
     encrypted.handles[0], // baseSalary (bytes32)
     encrypted.handles[1], // kpiBonus (bytes32)
     encrypted.handles[2], // taskBonus (bytes32)
-    encrypted.inputProof
+    encrypted.inputProof  // proof (bytes)
   );
   
   console.log("Add employee transaction sent:", tx.hash);
