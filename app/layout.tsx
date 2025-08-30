@@ -6,6 +6,7 @@ import { Providers } from "./providers"
 import { Scripts } from "./scripts"
 import { InMemoryStorageProvider } from "@/hooks/useInMemoryStorage"
 import { MetaMaskProvider } from "@/hooks/metamask/useMetaMaskProvider"
+import { MetaMaskEthersSignerProvider } from "@/hooks/metamask/useMetaMaskEthersSigner"
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -30,9 +31,11 @@ export default function RootLayout({
         <Scripts />
         <InMemoryStorageProvider>
           <MetaMaskProvider>
-            <Providers>
-              {children}
-            </Providers>
+            <MetaMaskEthersSignerProvider initialMockChains={{}}>
+              <Providers>
+                {children}
+              </Providers>
+            </MetaMaskEthersSignerProvider>
           </MetaMaskProvider>
         </InMemoryStorageProvider>
       </body>
