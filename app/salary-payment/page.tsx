@@ -55,21 +55,21 @@ const demoEmployees: Employee[] = [
     name: "John Smith",
     address: "0x742d35Cc6634C0532925a3b8D4C9db96590b5c8e",
     position: "Senior Developer",
-    baseSalary: 8000,
-    currentSalary: 8500,
+    baseSalary: 0.08,
+    currentSalary: 0.085,
     kpiScore: 92,
     tasksCompleted: 18,
     totalTasks: 20,
-    lastPaymentDate: "2024-01-15",
+    lastPaymentDate: "2025-01-15",
     paymentPlan: {
       id: "plan-001",
       employeeId: "emp-001",
-      baseAmount: 8000,
-      kpiBonus: 736, // 92% * 800
-      taskBonus: 180, // 18/20 * 200
-      totalAmount: 8916,
+      baseAmount: 0.08,
+      kpiBonus: 0.00736, // 92% * 0.008
+      taskBonus: 0.0018, // 18/20 * 0.002
+      totalAmount: 0.08916,
       status: 'pending',
-      dueDate: "2024-02-01"
+      dueDate: "2025-01-30"
     },
     isActive: true
   },
@@ -78,21 +78,21 @@ const demoEmployees: Employee[] = [
     name: "Sarah Johnson",
     address: "0x8ba1f109551bD432803012645Hac136c772c3c3",
     position: "Product Manager",
-    baseSalary: 9000,
-    currentSalary: 9450,
+    baseSalary: 0.09,
+    currentSalary: 0.0945,
     kpiScore: 88,
     tasksCompleted: 16,
     totalTasks: 18,
-    lastPaymentDate: "2024-01-15",
+    lastPaymentDate: "2025-01-15",
     paymentPlan: {
       id: "plan-002",
       employeeId: "emp-002",
-      baseAmount: 9000,
-      kpiBonus: 792, // 88% * 900
-      taskBonus: 160, // 16/18 * 180
-      totalAmount: 9952,
+      baseAmount: 0.09,
+      kpiBonus: 0.00792, // 88% * 0.009
+      taskBonus: 0.0016, // 16/18 * 0.0018
+      totalAmount: 0.09952,
       status: 'pending',
-      dueDate: "2024-02-01"
+      dueDate: "2025-01-30"
     },
     isActive: true
   },
@@ -101,21 +101,21 @@ const demoEmployees: Employee[] = [
     name: "Michael Chen",
     address: "0x147B8eb97fD247D06C4006D269c90C1908Fb5D54",
     position: "UX Designer",
-    baseSalary: 7000,
-    currentSalary: 7350,
+    baseSalary: 0.07,
+    currentSalary: 0.0735,
     kpiScore: 95,
     tasksCompleted: 19,
     totalTasks: 20,
-    lastPaymentDate: "2024-01-15",
+    lastPaymentDate: "2025-01-15",
     paymentPlan: {
       id: "plan-003",
       employeeId: "emp-003",
-      baseAmount: 7000,
-      kpiBonus: 665, // 95% * 700
-      taskBonus: 190, // 19/20 * 200
-      totalAmount: 7855,
+      baseAmount: 0.07,
+      kpiBonus: 0.00665, // 95% * 0.007
+      taskBonus: 0.0019, // 19/20 * 0.002
+      totalAmount: 0.07855,
       status: 'pending',
-      dueDate: "2024-02-01"
+      dueDate: "2025-01-30"
     },
     isActive: true
   },
@@ -124,21 +124,21 @@ const demoEmployees: Employee[] = [
     name: "Emily Davis",
     address: "0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db",
     position: "DevOps Engineer",
-    baseSalary: 8500,
-    currentSalary: 8925,
+    baseSalary: 0.085,
+    currentSalary: 0.08925,
     kpiScore: 85,
     tasksCompleted: 17,
     totalTasks: 20,
-    lastPaymentDate: "2024-01-15",
+    lastPaymentDate: "2025-01-15",
     paymentPlan: {
       id: "plan-004",
       employeeId: "emp-004",
-      baseAmount: 8500,
-      kpiBonus: 680, // 85% * 800
-      taskBonus: 170, // 17/20 * 200
-      totalAmount: 9350,
+      baseAmount: 0.085,
+      kpiBonus: 0.0068, // 85% * 0.008
+      taskBonus: 0.0017, // 17/20 * 0.002
+      totalAmount: 0.0935,
       status: 'pending',
-      dueDate: "2024-02-01"
+      dueDate: "2025-01-30"
     },
     isActive: true
   }
@@ -210,7 +210,38 @@ export default function SalaryPaymentPage() {
 
     setIsLoading(true);
     try {
-      // Simulate blockchain transaction
+      // Check if we have a contract address (you'll need to deploy the contract first)
+      const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
+      
+      if (!contractAddress) {
+        // For demo purposes, simulate the transaction
+        console.log("No contract address found, simulating transaction...");
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        
+        // Update employee payment status
+        const updatedEmployees = employees.map(emp => 
+          emp.id === employee.id 
+            ? { 
+                ...emp, 
+                lastPaymentDate: new Date().toISOString().split('T')[0],
+                paymentPlan: { ...emp.paymentPlan, status: 'paid' as const }
+              }
+            : emp
+        );
+        
+        setEmployees(updatedEmployees);
+        setNotification({ 
+          type: "success", 
+          message: `Salary paid successfully to ${employee.name}! Amount: ${formatEthAmount(employee.paymentPlan.totalAmount)} ETH` 
+        });
+        return;
+      }
+
+      // Real FHEVM transaction would go here
+      // const { paySalary: contractPaySalary } = useConfidentialSalary(contractAddress);
+      // const result = await contractPaySalary(employee.address);
+      
+      // For now, simulate the transaction
       await new Promise((resolve) => setTimeout(resolve, 3000));
       
       // Update employee payment status
@@ -227,7 +258,7 @@ export default function SalaryPaymentPage() {
       setEmployees(updatedEmployees);
       setNotification({ 
         type: "success", 
-        message: `Salary paid successfully to ${employee.name}! Amount: ${employee.paymentPlan.totalAmount} ETH` 
+        message: `Salary paid successfully to ${employee.name}! Amount: ${formatEthAmount(employee.paymentPlan.totalAmount)} ETH` 
       });
     } catch (error) {
       console.error("Error paying salary:", error);
@@ -249,6 +280,10 @@ export default function SalaryPaymentPage() {
       case 'approved': return "bg-blue-100 text-blue-800";
       default: return "bg-gray-100 text-gray-800";
     }
+  };
+
+  const formatEthAmount = (amount: number) => {
+    return amount.toFixed(4);
   };
 
   return (
@@ -348,11 +383,11 @@ export default function SalaryPaymentPage() {
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span>Base Salary:</span>
-                      <span className="font-medium">{employee.baseSalary} ETH</span>
+                      <span className="font-medium">{formatEthAmount(employee.baseSalary)} ETH</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Current Salary:</span>
-                      <span className="font-medium text-green-600">{employee.currentSalary} ETH</span>
+                      <span className="font-medium text-green-600">{formatEthAmount(employee.currentSalary)} ETH</span>
                     </div>
                   </div>
 
@@ -364,7 +399,7 @@ export default function SalaryPaymentPage() {
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Amount:</span>
-                      <span className="font-medium">{employee.paymentPlan.totalAmount} ETH</span>
+                      <span className="font-medium">{formatEthAmount(employee.paymentPlan.totalAmount)} ETH</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Due:</span>
@@ -418,19 +453,19 @@ export default function SalaryPaymentPage() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                       <div>
                         <span className="text-muted-foreground">Base Amount:</span>
-                        <p className="font-medium">{employee.paymentPlan.baseAmount} ETH</p>
+                        <p className="font-medium">{formatEthAmount(employee.paymentPlan.baseAmount)} ETH</p>
                       </div>
                       <div>
                         <span className="text-muted-foreground">KPI Bonus:</span>
-                        <p className="font-medium text-green-600">+{employee.paymentPlan.kpiBonus} ETH</p>
+                        <p className="font-medium text-green-600">+{formatEthAmount(employee.paymentPlan.kpiBonus)} ETH</p>
                       </div>
                       <div>
                         <span className="text-muted-foreground">Task Bonus:</span>
-                        <p className="font-medium text-blue-600">+{employee.paymentPlan.taskBonus} ETH</p>
+                        <p className="font-medium text-blue-600">+{formatEthAmount(employee.paymentPlan.taskBonus)} ETH</p>
                       </div>
                       <div>
                         <span className="text-muted-foreground">Total:</span>
-                        <p className="font-medium text-lg">{employee.paymentPlan.totalAmount} ETH</p>
+                        <p className="font-medium text-lg">{formatEthAmount(employee.paymentPlan.totalAmount)} ETH</p>
                       </div>
                     </div>
                   </div>
