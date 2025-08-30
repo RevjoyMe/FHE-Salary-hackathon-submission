@@ -1,9 +1,9 @@
 "use client"
 
 import { Settings, Users, Bell, Shield, Database } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Switch } from "@/components/ui/switch"
+import { Button } from "../../components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
+import { Switch } from "../../components/ui/switch"
 
 export default function SettingsPage() {
   return (
