@@ -62,8 +62,8 @@ const demoEmployees: Employee[] = [
     name: "John Smith",
     address: "0x742d35Cc6634C0532925a3b8D4C9db96590b5c8e",
     position: "Senior Developer",
-    baseSalary: 0.001,
-    currentSalary: 0.00105,
+    baseSalary: 0.000001,
+    currentSalary: 0.00000105,
     kpiScore: 92,
     tasksCompleted: 18,
     totalTasks: 20,
@@ -71,10 +71,10 @@ const demoEmployees: Employee[] = [
     paymentPlan: {
       id: "plan-001",
       employeeId: "emp-001",
-      baseAmount: 0.001,
-      kpiBonus: 0.000092, // 92% * 0.0001
-      taskBonus: 0.000018, // 18/20 * 0.00002
-      totalAmount: 0.00111,
+      baseAmount: 0.000001,
+      kpiBonus: 0.000000092, // 92% * 0.0000001
+      taskBonus: 0.000000018, // 18/20 * 0.00000002
+      totalAmount: 0.00000111,
       status: 'pending',
       dueDate: "2025-01-30"
     },
@@ -85,8 +85,8 @@ const demoEmployees: Employee[] = [
     name: "Sarah Johnson",
     address: "0x8ba1f109551bD432803012645Hac136c772c3c3",
     position: "Product Manager",
-    baseSalary: 0.0011,
-    currentSalary: 0.001155,
+    baseSalary: 0.0000011,
+    currentSalary: 0.000001155,
     kpiScore: 88,
     tasksCompleted: 16,
     totalTasks: 18,
@@ -94,10 +94,10 @@ const demoEmployees: Employee[] = [
     paymentPlan: {
       id: "plan-002",
       employeeId: "emp-002",
-      baseAmount: 0.0011,
-      kpiBonus: 0.000097, // 88% * 0.00011
-      taskBonus: 0.000016, // 16/18 * 0.000018
-      totalAmount: 0.001213,
+      baseAmount: 0.0000011,
+      kpiBonus: 0.000000097, // 88% * 0.00000011
+      taskBonus: 0.000000016, // 16/18 * 0.000000018
+      totalAmount: 0.000001213,
       status: 'pending',
       dueDate: "2025-01-30"
     },
@@ -108,8 +108,8 @@ const demoEmployees: Employee[] = [
     name: "Michael Chen",
     address: "0x147B8eb97fD247D06C4006D269c90C1908Fb5D54",
     position: "UX Designer",
-    baseSalary: 0.0009,
-    currentSalary: 0.000945,
+    baseSalary: 0.0000009,
+    currentSalary: 0.000000945,
     kpiScore: 95,
     tasksCompleted: 19,
     totalTasks: 20,
@@ -117,10 +117,10 @@ const demoEmployees: Employee[] = [
     paymentPlan: {
       id: "plan-003",
       employeeId: "emp-003",
-      baseAmount: 0.0009,
-      kpiBonus: 0.000085, // 95% * 0.00009
-      taskBonus: 0.000019, // 19/20 * 0.00002
-      totalAmount: 0.001004,
+      baseAmount: 0.0000009,
+      kpiBonus: 0.000000085, // 95% * 0.00000009
+      taskBonus: 0.000000019, // 19/20 * 0.00000002
+      totalAmount: 0.000001004,
       status: 'pending',
       dueDate: "2025-01-30"
     },
@@ -131,8 +131,8 @@ const demoEmployees: Employee[] = [
     name: "Emily Davis",
     address: "0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db",
     position: "DevOps Engineer",
-    baseSalary: 0.00105,
-    currentSalary: 0.0011025,
+    baseSalary: 0.00000105,
+    currentSalary: 0.0000011025,
     kpiScore: 85,
     tasksCompleted: 17,
     totalTasks: 20,
@@ -140,10 +140,10 @@ const demoEmployees: Employee[] = [
     paymentPlan: {
       id: "plan-004",
       employeeId: "emp-004",
-      baseAmount: 0.00105,
-      kpiBonus: 0.000085, // 85% * 0.0001
-      taskBonus: 0.000017, // 17/20 * 0.00002
-      totalAmount: 0.001152,
+      baseAmount: 0.00000105,
+      kpiBonus: 0.000000085, // 85% * 0.0000001
+      taskBonus: 0.000000017, // 17/20 * 0.00000002
+      totalAmount: 0.000001152,
       status: 'pending',
       dueDate: "2025-01-30"
     },
