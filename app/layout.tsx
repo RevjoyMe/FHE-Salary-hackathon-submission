@@ -4,6 +4,7 @@ import { DM_Sans } from "next/font/google"
 import "./globals.css"
 import { Providers } from "./providers"
 import { Scripts } from "./scripts"
+import { InMemoryStorageProvider } from "@/hooks/useInMemoryStorage"
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -26,9 +27,11 @@ export default function RootLayout({
     <html lang="en" className={dmSans.variable}>
       <body className={`${dmSans.className} bg-background text-foreground antialiased font-sans`}>
         <Scripts />
-        <Providers>
-          {children}
-        </Providers>
+        <InMemoryStorageProvider>
+          <Providers>
+            {children}
+          </Providers>
+        </InMemoryStorageProvider>
       </body>
     </html>
   )

@@ -1,209 +1,251 @@
-import { useCallback, useEffect, useState } from "react";
-import { useFhevmContext } from "../fhevm/useFhevm";
-import { useMetaMaskEthersSigner } from "./metamask/useMetaMaskEthersSigner";
-import { TFHE } from "@zama-fhe/relayer-sdk";
+"use client";
 
-// Contract ABI - you'll need to generate this after compiling the contract
+import { ethers } from "ethers";
+import {
+  RefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+
+import { FhevmInstance } from "@/fhevm/fhevmTypes";
+import { FhevmDecryptionSignature } from "@/fhevm/FhevmDecryptionSignature";
+import { GenericStringStorage } from "@/fhevm/GenericStringStorage";
+
+// Contract configuration
+const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 const CONTRACT_ABI = [
-  "function registerCompany(string memory _name) external",
-  "function addEmployee(address _employeeAddress, euint32 _baseSalary, euint32 _kpiBonus, euint32 _taskBonus) external",
-  "function paySalary(address _employeeAddress) external",
-  "function deactivateEmployee(address _employeeAddress) external",
-  "function getEmployeeInfo(address _companyAddress, address _employeeAddress) external view returns (address employeeAddress, bool isActive, uint256 lastPaymentDate)",
-  "function getCompanyInfo(address _companyAddress) external view returns (address companyAddress, string memory name, uint256 employeeCount)",
-  "function getCompanyEmployees(address _companyAddress) external view returns (address[] memory)",
-  "function getEmployeeSalary(address _companyAddress, address _employeeAddress) external view returns (euint32 totalSalary)",
-  "function getTotalPayroll(address _companyAddress) external view returns (euint32 totalPayroll)",
-  "event CompanyRegistered(address indexed companyAddress, string name)",
-  "event EmployeeAdded(address indexed companyAddress, address indexed employeeAddress)",
-  "event SalaryPaid(address indexed companyAddress, address indexed employeeAddress, uint256 amount)",
-  "event EmployeeDeactivated(address indexed companyAddress, address indexed employeeAddress)"
+  "function addEmployee(address employee) external",
+  "function setSalary(address employee, bytes32 _salary) external",
+  "function getSalary(address employee) external view returns (bytes32)",
+  "function paySalary(address employee) external",
+  "function employees(address) external view returns (bool)",
+  "event EmployeeAdded(address employee)",
+  "event SalarySet(address employee, bytes32 salary)",
+  "event SalaryPaid(address employee, bytes32 amount)"
 ];
 
-export interface Employee {
-  address: string;
-  baseSalary: number;
-  kpiBonus: number;
-  taskBonus: number;
-  totalSalary: number;
-  isActive: boolean;
-  lastPaymentDate: number;
-}
+export type SalaryPaymentResult = {
+  txHash: string;
+  receipt: ethers.ContractTransactionReceipt;
+  encrypted: any;
+};
 
-export interface Company {
-  address: string;
-  name: string;
-  employeeCount: number;
-  totalPayroll: number;
-}
+export type AddEmployeeResult = {
+  txHash: string;
+  receipt: ethers.ContractTransactionReceipt;
+  encrypted: any;
+};
 
-export function useConfidentialSalary(contractAddress?: string) {
-  const { instance: fhevm } = useFhevmContext();
-  const { signer, isConnected } = useMetaMaskEthersSigner();
-  const [contract, setContract] = useState<any>(null);
+export type CompanyRegistrationResult = {
+  txHash: string;
+  receipt: ethers.ContractTransactionReceipt;
+};
+
+export const useConfidentialSalary = (parameters: {
+  instance: FhevmInstance | undefined;
+  fhevmDecryptionSignatureStorage: GenericStringStorage;
+  eip1193Provider: ethers.Eip1193Provider | undefined;
+  chainId: number | undefined;
+  ethersSigner: ethers.JsonRpcSigner | undefined;
+  ethersReadonlyProvider: ethers.ContractRunner | undefined;
+  sameChain: RefObject<(chainId: number | undefined) => boolean>;
+  sameSigner: RefObject<
+    (ethersSigner: ethers.JsonRpcSigner | undefined) => boolean
+  >;
+}) => {
+  const {
+    instance,
+    fhevmDecryptionSignatureStorage,
+    chainId,
+    ethersSigner,
+    ethersReadonlyProvider,
+    sameChain,
+    sameSigner,
+  } = parameters;
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (signer && contractAddress) {
-      const contractInstance = {
-        address: contractAddress,
-        abi: CONTRACT_ABI,
-        signer,
-      };
-      setContract(contractInstance);
-    }
-  }, [signer, contractAddress]);
+  // Create contract instance
+  const contract = useMemo(() => {
+    if (!ethersSigner || !CONTRACT_ADDRESS) return undefined;
+    return new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, ethersSigner);
+  }, [ethersSigner]);
 
-  const registerCompany = useCallback(async (name: string) => {
-    if (!contract || !fhevm) {
-      throw new Error("Contract or FHEVM not initialized");
-    }
+  // Pay salary with FHE encryption
+  const paySalary = useCallback(
+    async (
+      employeeAddress: string,
+      salaryAmount: number
+    ): Promise<SalaryPaymentResult> => {
+      if (!instance || !contract || !ethersSigner) {
+        throw new Error("FHEVM instance, contract, or signer not available");
+      }
 
-    setIsLoading(true);
-    setError(null);
+      setIsLoading(true);
+      setError(null);
 
-    try {
-      const tx = await contract.registerCompany(name);
-      await tx.wait();
-      return { success: true };
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Unknown error";
-      setError(errorMessage);
-      return { success: false, error: errorMessage };
-    } finally {
-      setIsLoading(false);
-    }
-  }, [contract, fhevm]);
+      try {
+        console.log("Paying salary with FHE encryption...");
+        console.log("Employee:", employeeAddress);
+        console.log("Amount:", salaryAmount);
 
-  const addEmployee = useCallback(async (
-    employeeAddress: string,
-    baseSalary: number,
-    kpiBonus: number,
-    taskBonus: number
-  ) => {
-    if (!contract || !fhevm) {
-      throw new Error("Contract or FHEVM not initialized");
-    }
+        // Get user address
+        const userAddress = await ethersSigner.getAddress();
+        console.log("User:", userAddress);
 
-    setIsLoading(true);
-    setError(null);
+        // Create encrypted input for salary amount
+        const input = instance.createEncryptedInput(CONTRACT_ADDRESS, userAddress);
+        
+        // Convert salary to bigint (in wei) and add to encrypted input
+        const salaryInWei = ethers.parseEther(salaryAmount.toString());
+        input.add64(salaryInWei);
+        
+        // Encrypt the input
+        const encrypted = await input.encrypt();
+        
+        console.log("Encrypted input created:", encrypted);
 
-    try {
-      // Encrypt the salary components
-      const encryptedBaseSalary = await fhevm.encrypt32(baseSalary);
-      const encryptedKpiBonus = await fhevm.encrypt32(kpiBonus);
-      const encryptedTaskBonus = await fhevm.encrypt32(taskBonus);
+        // Send transaction with encrypted data
+        const tx = await contract.paySalary(
+          employeeAddress,
+          encrypted.handles[0], // encryptedSalary (bytes32)
+          encrypted.inputProof  // proof (bytes)
+        );
+        
+        console.log("Transaction sent:", tx.hash);
+        
+        // Wait for confirmation
+        const receipt = await tx.wait();
+        console.log("Transaction confirmed:", receipt);
+        
+        return {
+          txHash: tx.hash,
+          receipt,
+          encrypted
+        };
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Unknown error";
+        setError(errorMessage);
+        throw err;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [instance, contract, ethersSigner]
+  );
 
-      const tx = await contract.addEmployee(
-        employeeAddress,
-        encryptedBaseSalary,
-        encryptedKpiBonus,
-        encryptedTaskBonus
-      );
-      await tx.wait();
-      return { success: true };
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Unknown error";
-      setError(errorMessage);
-      return { success: false, error: errorMessage };
-    } finally {
-      setIsLoading(false);
-    }
-  }, [contract, fhevm]);
+  // Add employee with FHE encryption
+  const addEmployee = useCallback(
+    async (
+      employeeAddress: string,
+      baseSalary: number,
+      kpiBonus: number,
+      taskBonus: number
+    ): Promise<AddEmployeeResult> => {
+      if (!instance || !contract || !ethersSigner) {
+        throw new Error("FHEVM instance, contract, or signer not available");
+      }
 
-  const paySalary = useCallback(async (employeeAddress: string) => {
-    if (!contract) {
-      throw new Error("Contract not initialized");
-    }
+      setIsLoading(true);
+      setError(null);
 
-    setIsLoading(true);
-    setError(null);
+      try {
+        console.log("Adding employee with FHE encryption...");
 
-    try {
-      const tx = await contract.paySalary(employeeAddress);
-      await tx.wait();
-      return { success: true };
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Unknown error";
-      setError(errorMessage);
-      return { success: false, error: errorMessage };
-    } finally {
-      setIsLoading(false);
-    }
-  }, [contract]);
+        // Get user address
+        const userAddress = await ethersSigner.getAddress();
 
-  const getCompanyInfo = useCallback(async (companyAddress: string): Promise<Company | null> => {
-    if (!contract) {
-      throw new Error("Contract not initialized");
-    }
+        // Create encrypted inputs
+        const input = instance.createEncryptedInput(CONTRACT_ADDRESS, userAddress);
+        
+        // Convert amounts to wei and add to input
+        const baseSalaryWei = ethers.parseEther(baseSalary.toString());
+        const kpiBonusWei = ethers.parseEther(kpiBonus.toString());
+        const taskBonusWei = ethers.parseEther(taskBonus.toString());
+        
+        input.add64(baseSalaryWei);
+        input.add64(kpiBonusWei);
+        input.add64(taskBonusWei);
+        
+        // Encrypt the inputs
+        const encrypted = await input.encrypt();
+        
+        console.log("Encrypted inputs created:", encrypted);
 
-    try {
-      const [address, name, employeeCount] = await contract.getCompanyInfo(companyAddress);
-      return {
-        address,
-        name,
-        employeeCount: employeeCount.toNumber(),
-        totalPayroll: 0 // This would need to be decrypted separately
-      };
-    } catch (err) {
-      console.error("Error getting company info:", err);
-      return null;
-    }
-  }, [contract]);
+        // Send transaction with encrypted data
+        const tx = await contract.addEmployee(
+          employeeAddress,
+          encrypted.handles[0], // baseSalary (bytes32)
+          encrypted.handles[1], // kpiBonus (bytes32)
+          encrypted.handles[2], // taskBonus (bytes32)
+          encrypted.inputProof  // proof (bytes)
+        );
+        
+        console.log("Add employee transaction sent:", tx.hash);
+        
+        const receipt = await tx.wait();
+        console.log("Add employee transaction confirmed:", receipt);
+        
+        return {
+          txHash: tx.hash,
+          receipt,
+          encrypted
+        };
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Unknown error";
+        setError(errorMessage);
+        throw err;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [instance, contract, ethersSigner]
+  );
 
-  const getEmployeeInfo = useCallback(async (
-    companyAddress: string,
-    employeeAddress: string
-  ): Promise<Employee | null> => {
-    if (!contract) {
-      throw new Error("Contract not initialized");
-    }
+  // Register company
+  const registerCompany = useCallback(
+    async (name: string): Promise<CompanyRegistrationResult> => {
+      if (!contract || !ethersSigner) {
+        throw new Error("Contract or signer not available");
+      }
 
-    try {
-      const [address, isActive, lastPaymentDate] = await contract.getEmployeeInfo(
-        companyAddress,
-        employeeAddress
-      );
-      return {
-        address,
-        baseSalary: 0, // Encrypted, would need to be decrypted
-        kpiBonus: 0,   // Encrypted, would need to be decrypted
-        taskBonus: 0,  // Encrypted, would need to be decrypted
-        totalSalary: 0, // Encrypted, would need to be decrypted
-        isActive,
-        lastPaymentDate: lastPaymentDate.toNumber()
-      };
-    } catch (err) {
-      console.error("Error getting employee info:", err);
-      return null;
-    }
-  }, [contract]);
+      setIsLoading(true);
+      setError(null);
 
-  const getCompanyEmployees = useCallback(async (companyAddress: string): Promise<string[]> => {
-    if (!contract) {
-      throw new Error("Contract not initialized");
-    }
+      try {
+        console.log("Registering company:", name);
 
-    try {
-      const employees = await contract.getCompanyEmployees(companyAddress);
-      return employees;
-    } catch (err) {
-      console.error("Error getting company employees:", err);
-      return [];
-    }
-  }, [contract]);
+        const tx = await contract.registerCompany(name);
+        console.log("Register company transaction sent:", tx.hash);
+        
+        const receipt = await tx.wait();
+        console.log("Register company transaction confirmed:", receipt);
+        
+        return {
+          txHash: tx.hash,
+          receipt
+        };
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Unknown error";
+        setError(errorMessage);
+        throw err;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [contract, ethersSigner]
+  );
 
   return {
-    contract,
+    paySalary,
+    addEmployee,
+    registerCompany,
     isLoading,
     error,
-    isConnected,
-    registerCompany,
-    addEmployee,
-    paySalary,
-    getCompanyInfo,
-    getEmployeeInfo,
-    getCompanyEmployees,
+    contract
   };
-}
+};
