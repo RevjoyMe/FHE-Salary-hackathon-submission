@@ -5,6 +5,15 @@ import { createFhevmInstance } from "./internal/fhevm";
 // Dynamic import to avoid SSR issues
 const getRelayerSDK = async () => {
   if (typeof window === 'undefined') return null;
+  
+  // Apply polyfills before importing
+  if (typeof global === 'undefined') {
+    (window as any).global = window;
+  }
+  if (typeof process === 'undefined') {
+    (window as any).process = { env: {} };
+  }
+  
   return await import("@zama-fhe/relayer-sdk/web");
 };
 
@@ -206,24 +215,14 @@ export function FhevmProvider({ children }: { children: ReactNode }) {
         
         const { createInstance, initSDK, SepoliaConfig } = relayerSDK;
         
-        // Try to initialize SDK directly (fallback if CDN fails)
+        // Try to initialize SDK directly
         try {
           console.log("Initializing SDK...");
           await initSDK();
           console.log("SDK initialized successfully");
         } catch (sdkError) {
-          console.warn("SDK initialization failed, trying alternative method:", sdkError);
-          
-          // Wait for Relayer SDK to be available from CDN
-          let attempts = 0;
-          while (!(window as any).relayerSDK && attempts < 30) {
-            await new Promise(resolve => setTimeout(resolve, 200));
-            attempts++;
-          }
-          
-          if (!(window as any).relayerSDK) {
-            console.warn("Relayer SDK not loaded from CDN, using dynamic import only");
-          }
+          console.warn("SDK initialization failed:", sdkError);
+          console.log("Continuing with dynamic import only...");
         }
         
         // Create FHEVM instance with Sepolia config

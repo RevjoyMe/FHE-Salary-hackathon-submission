@@ -3,6 +3,15 @@ import { ethers } from "ethers";
 // Dynamic import to avoid SSR issues
 const getRelayerSDK = async () => {
   if (typeof window === 'undefined') return null;
+  
+  // Apply polyfills before importing
+  if (typeof global === 'undefined') {
+    (window as any).global = window;
+  }
+  if (typeof process === 'undefined') {
+    (window as any).process = { env: {} };
+  }
+  
   return await import("@zama-fhe/relayer-sdk/web");
 };
 
