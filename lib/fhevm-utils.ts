@@ -1,3 +1,6 @@
+// Import polyfills first
+import './polyfills';
+
 import { ethers } from "ethers";
 
 // Dynamic import to avoid SSR issues

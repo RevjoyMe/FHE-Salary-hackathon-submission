@@ -1,7 +1,11 @@
+// Import polyfills first
+import '../lib/polyfills';
+
 import { ethers } from "ethers";
 import { useCallback, useEffect, useRef, useState, createContext, useContext, ReactNode } from "react";
 import type { FhevmInstance } from "./fhevmTypes";
 import { createFhevmInstance } from "./internal/fhevm";
+
 // Dynamic import to avoid SSR issues
 const getRelayerSDK = async () => {
   if (typeof window === 'undefined') return null;
