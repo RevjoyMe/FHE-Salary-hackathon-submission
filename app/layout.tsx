@@ -30,7 +30,16 @@ export default function RootLayout({
   return (
     <html lang="en" className={dmSans.variable}>
       <body className={`${dmSans.className} bg-background text-foreground antialiased font-sans`}>
-        {children}
+        <Scripts />
+        <InMemoryStorageProvider>
+          <MetaMaskProvider>
+            <MetaMaskEthersSignerProvider initialMockChains={{}}>
+              <Providers>
+                {children}
+              </Providers>
+            </MetaMaskEthersSignerProvider>
+          </MetaMaskProvider>
+        </InMemoryStorageProvider>
       </body>
     </html>
   )

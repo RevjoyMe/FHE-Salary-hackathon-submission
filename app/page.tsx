@@ -17,6 +17,19 @@ import {
   Wallet,
 } from "lucide-react"
 import { Button } from "../components/ui/button"
+// Import all page components
+import AnalyticsPage from "./analytics/page"
+import CommandCenterPage from "./command-center/page"
+import EmployeesPage from "./employees/page"
+import IntelligencePage from "./intelligence/page"
+import KPIPage from "./kpi/page"
+import OperationsPage from "./operations/page"
+import PayrollPage from "./payroll/page"
+import SalaryPage from "./salary/page"
+import SalaryPaymentPage from "./salary-payment/page"
+import SettingsPage from "./settings/page"
+import SystemsPage from "./systems/page"
+import TasksPage from "./tasks/page"
 
 export default function HRDashboard() {
   const [activeSection, setActiveSection] = useState("overview")
@@ -133,13 +146,13 @@ export default function HRDashboard() {
         {/* Dashboard Content */}
         <div className="flex-1 overflow-auto bg-background">
           {activeSection === "overview" && <OverviewPage />}
-          {activeSection === "employees" && <EmployeesPage />}
-          {activeSection === "payroll" && <PayrollPage />}
-          {activeSection === "salary-payment" && <SalaryPaymentPagePlaceholder />}
-          {activeSection === "kpi" && <KPIPage />}
-          {activeSection === "tasks" && <TasksPage />}
-          {activeSection === "analytics" && <AnalyticsPage />}
-          {activeSection === "settings" && <SettingsPage />}
+          {activeSection === "employees" && EmployeesPage && <EmployeesPage />}
+          {activeSection === "payroll" && PayrollPage && <PayrollPage />}
+          {activeSection === "salary-payment" && SalaryPaymentPage && <SalaryPaymentPage />}
+          {activeSection === "kpi" && KPIPage && <KPIPage />}
+          {activeSection === "tasks" && TasksPage && <TasksPage />}
+          {activeSection === "analytics" && AnalyticsPage && <AnalyticsPage />}
+          {activeSection === "settings" && SettingsPage && <SettingsPage />}
         </div>
       </div>
     </div>
@@ -219,81 +232,4 @@ function OverviewPage() {
   )
 }
 
-// Placeholder components for missing pages
-function EmployeesPage() {
-  return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold text-foreground mb-6">Employees</h1>
-      <div className="bg-card p-6 rounded-lg border border-border">
-        <p className="text-muted-foreground">Employees page content will be loaded here.</p>
-      </div>
-    </div>
-  )
-}
 
-function PayrollPage() {
-  return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold text-foreground mb-6">Payroll</h1>
-      <div className="bg-card p-6 rounded-lg border border-border">
-        <p className="text-muted-foreground">Payroll page content will be loaded here.</p>
-      </div>
-    </div>
-  )
-}
-
-function KPIPage() {
-  return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold text-foreground mb-6">KPI</h1>
-      <div className="bg-card p-6 rounded-lg border border-border">
-        <p className="text-muted-foreground">KPI page content will be loaded here.</p>
-      </div>
-    </div>
-  )
-}
-
-function TasksPage() {
-  return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold text-foreground mb-6">Tasks</h1>
-      <div className="bg-card p-6 rounded-lg border border-border">
-        <p className="text-muted-foreground">Tasks page content will be loaded here.</p>
-      </div>
-    </div>
-  )
-}
-
-function AnalyticsPage() {
-  return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold text-foreground mb-6">Analytics</h1>
-      <div className="bg-card p-6 rounded-lg border border-border">
-        <p className="text-muted-foreground">Analytics page content will be loaded here.</p>
-      </div>
-    </div>
-  )
-}
-
-function SettingsPage() {
-  return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold text-foreground mb-6">Settings</h1>
-      <div className="bg-card p-6 rounded-lg border border-border">
-        <p className="text-muted-foreground">Settings page content will be loaded here.</p>
-      </div>
-    </div>
-  )
-}
-
-function SalaryPaymentPagePlaceholder() {
-  return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold text-foreground mb-6">Salary Payment</h1>
-      <div className="bg-card p-6 rounded-lg border border-border">
-        <p className="text-muted-foreground">Salary Payment page is being loaded...</p>
-        <p className="text-sm text-muted-foreground mt-2">This page will contain FHE-enabled salary payment functionality.</p>
-      </div>
-    </div>
-  )
-}
