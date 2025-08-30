@@ -34,6 +34,8 @@ const getRelayerSDK = async () => {
   (window as any).global = (window as any).global || window;
   (window as any).process = (window as any).process || { env: {} };
   
+  // Dynamic import only on client side
+  const { createInstance, initSDK, SepoliaConfig } = await import("@zama-fhe/relayer-sdk/web");
   return { createInstance, initSDK, SepoliaConfig };
 };
 

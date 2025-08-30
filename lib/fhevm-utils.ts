@@ -31,6 +31,8 @@ const getRelayerSDK = async () => {
   (window as any).global = (window as any).global || window;
   (window as any).process = (window as any).process || { env: {} };
   
+  // Dynamic import only on client side
+  const { createInstance, initSDK, SepoliaConfig } = await import("@zama-fhe/relayer-sdk/web");
   return { createInstance, initSDK, SepoliaConfig };
 };
 
@@ -38,7 +40,7 @@ const getRelayerSDK = async () => {
 export const CONTRACT_ADDRESS = "0x71864F70Dbc4CF7135db460e6d7aAdb8dA627875";
 export const CONTRACT_ABI = [
   "function paySalary(address employeeAddress) external payable",
-  "function addEmployee(address employeeAddress, euint32 baseSalary, euint32 kpiBonus, euint32 taskBonus) external",
+  "function addEmployee(address employeeAddress, euint64 baseSalary, euint64 kpiBonus, euint64 taskBonus) external",
   "function registerCompany(string memory name) external",
   "event SalaryPaid(address indexed companyAddress, address indexed employeeAddress, uint256 timestamp)",
   "event EmployeeAdded(address indexed companyAddress, address indexed employeeAddress)",
