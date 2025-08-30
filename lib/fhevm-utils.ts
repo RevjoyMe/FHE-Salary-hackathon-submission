@@ -80,11 +80,9 @@ export async function paySalaryWithFHE(
   await eth.request({ method: "eth_requestAccounts" });
   
   // Create provider with explicit network configuration to avoid ENS issues
-  const provider = new ethers.BrowserProvider(
-    eth,
-    new ethers.Network("fhevm-testnet", 9746) // ✅ без ENS
-  );
-  const signer = await provider.getSigner();
+  const network = { chainId: 9746, name: "fhevm-testnet" };
+  const provider = new ethers.JsonRpcProvider("https://fhevm-testnet.zama.ai", network);
+  const signer = await (new ethers.BrowserProvider(eth)).getSigner();
   const userAddress = await signer.getAddress();
 
   console.log("Paying salary with FHE encryption...");
@@ -105,7 +103,7 @@ export async function paySalaryWithFHE(
   console.log("Encrypted input created:", encrypted);
 
   // Create contract instance
-  const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+  const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer.connect(provider));
   
   // Send transaction with encrypted data
   const tx = await contract.paySalary(
@@ -143,11 +141,9 @@ export async function addEmployeeWithFHE(
   await eth.request({ method: "eth_requestAccounts" });
   
   // Create provider with explicit network configuration to avoid ENS issues
-  const provider = new ethers.BrowserProvider(
-    eth,
-    new ethers.Network("fhevm-testnet", 9746) // ✅ без ENS
-  );
-  const signer = await provider.getSigner();
+  const network = { chainId: 9746, name: "fhevm-testnet" };
+  const provider = new ethers.JsonRpcProvider("https://fhevm-testnet.zama.ai", network);
+  const signer = await (new ethers.BrowserProvider(eth)).getSigner();
   const userAddress = await signer.getAddress();
 
   console.log("Adding employee with FHE encryption...");
@@ -170,7 +166,7 @@ export async function addEmployeeWithFHE(
   console.log("Encrypted inputs created:", encrypted);
 
   // Create contract instance
-  const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+  const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer.connect(provider));
   
   // Send transaction with encrypted data
   const tx = await contract.addEmployee(
@@ -203,15 +199,13 @@ export async function registerCompany(name: string) {
   await eth.request({ method: "eth_requestAccounts" });
   
   // Create provider with explicit network configuration to avoid ENS issues
-  const provider = new ethers.BrowserProvider(
-    eth,
-    new ethers.Network("fhevm-testnet", 9746) // ✅ без ENS
-  );
-  const signer = await provider.getSigner();
+  const network = { chainId: 9746, name: "fhevm-testnet" };
+  const provider = new ethers.JsonRpcProvider("https://fhevm-testnet.zama.ai", network);
+  const signer = await (new ethers.BrowserProvider(eth)).getSigner();
 
   console.log("Registering company:", name);
 
-  const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+  const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer.connect(provider));
   
   const tx = await contract.registerCompany(name);
   console.log("Register company transaction sent:", tx.hash);
