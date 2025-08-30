@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import { useCallback, useEffect, useRef, useState, createContext, useContext, ReactNode } from "react";
 import type { FhevmInstance } from "./fhevmTypes";
 import { createFhevmInstance } from "./internal/fhevm";
+import { createInstance, initSDK, SepoliaConfig } from "@zama-fhe/relayer-sdk";
 
 function _assert(condition: boolean, message?: string): asserts condition {
   if (!condition) {
@@ -180,6 +181,35 @@ const FhevmContext = createContext<{
 export function FhevmProvider({ children }: { children: ReactNode }) {
   const [provider, setProvider] = useState<ethers.Eip1193Provider | undefined>(undefined);
   const [chainId, setChainId] = useState<number | undefined>(undefined);
+  const [fhevmInstance, setFhevmInstance] = useState<FhevmInstance | undefined>(undefined);
+  const [status, setStatus] = useState<FhevmGoState>("idle");
+  const [error, setError] = useState<Error | undefined>(undefined);
+
+  // Initialize FHEVM with Relayer SDK
+  useEffect(() => {
+    const initFHEVM = async () => {
+      try {
+        setStatus("loading");
+        console.log("Initializing FHEVM with Relayer SDK...");
+        
+        // Initialize SDK
+        await initSDK();
+        
+        // Create FHEVM instance with Sepolia config
+        const instance = await createInstance(SepoliaConfig);
+        
+        console.log("FHEVM initialized successfully:", instance);
+        setFhevmInstance(instance);
+        setStatus("ready");
+      } catch (err) {
+        console.error("Failed to initialize FHEVM:", err);
+        setError(err instanceof Error ? err : new Error("Unknown error"));
+        setStatus("error");
+      }
+    };
+
+    initFHEVM();
+  }, []);
 
   // Initialize provider from window.ethereum
   useEffect(() => {
@@ -206,11 +236,17 @@ export function FhevmProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const fhevm = useFhevm({
-    provider,
-    chainId,
-    enabled: true,
-  });
+  const fhevm = {
+    instance: fhevmInstance,
+    refresh: () => {
+      // Reinitialize FHEVM
+      setStatus("idle");
+      setError(undefined);
+      setFhevmInstance(undefined);
+    },
+    error,
+    status,
+  };
 
   return (
     <FhevmContext.Provider value={fhevm}>

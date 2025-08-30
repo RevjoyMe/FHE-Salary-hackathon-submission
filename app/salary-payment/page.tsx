@@ -11,11 +11,17 @@ import { Alert, AlertDescription } from "../../components/ui/alert"
 import { Badge } from "../../components/ui/badge"
 import { Progress } from "../../components/ui/progress"
 import { useFhevmContext } from "../../fhevm/useFhevm"
+import { paySalaryWithFHE } from "../../lib/fhevm-utils"
 
-// Add MetaMask types
+// Add MetaMask and Temple Wallet types
 declare global {
   interface Window {
     ethereum?: {
+      request: (args: { method: string; params?: any[] }) => Promise<any>;
+      on: (event: string, callback: (params: any) => void) => void;
+      removeListener: (event: string, callback: (params: any) => void) => void;
+    };
+    temple?: {
       request: (args: { method: string; params?: any[] }) => Promise<any>;
       on: (event: string, callback: (params: any) => void) => void;
       removeListener: (event: string, callback: (params: any) => void) => void;
@@ -263,7 +269,7 @@ export default function SalaryPaymentPage() {
         return;
       }
 
-      // Real FHEVM transaction would go here
+      // Real FHEVM transaction
       console.log("Initiating real FHEVM transaction...");
       console.log("FHEVM context:", fhevmContext);
       console.log("FHEVM instance:", fhevm);
@@ -317,34 +323,20 @@ export default function SalaryPaymentPage() {
         return;
       }
 
-      // Create contract instance
-      const { ethers } = await import("ethers");
-      
-      if (!window.ethereum) {
-        throw new Error("MetaMask not found");
-      }
-      
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      
-      // Contract ABI for paySalary function
-      const contractABI = [
-        "function paySalary(address employeeAddress) external payable"
-      ];
-      
-      const contract = new ethers.Contract(contractAddress, contractABI, signer);
-      
-      // Convert ETH amount to wei
-      const amountInWei = ethers.parseEther(employee.paymentPlan.totalAmount.toString());
-      
-      // Send transaction
-      const tx = await contract.paySalary(employee.address, { value: amountInWei });
-      console.log("Transaction sent:", tx.hash);
-      
-      // Wait for confirmation
-      const receipt = await tx.wait();
-      console.log("Transaction confirmed:", receipt);
-      
+      // Use real FHEVM transaction
+      setNotification({ 
+        type: "success", 
+        message: "🔐 FHEVM: Initializing confidential transaction..." 
+      });
+
+      const result = await paySalaryWithFHE(
+        employee.address,
+        employee.paymentPlan.totalAmount,
+        fhevm
+      );
+
+      console.log("FHEVM transaction result:", result);
+
       // Update employee payment status
       const updatedEmployees = employees.map(emp => 
         emp.id === employee.id 
@@ -359,7 +351,7 @@ export default function SalaryPaymentPage() {
       setEmployees(updatedEmployees);
       setNotification({ 
         type: "success", 
-        message: `✅ FHEVM: Salary paid successfully to ${employee.name}! Amount: ${formatEthAmount(employee.paymentPlan.totalAmount)} ETH (encrypted). TX: ${tx.hash}` 
+        message: `✅ FHEVM: Salary paid successfully to ${employee.name}! Amount: ${formatEthAmount(employee.paymentPlan.totalAmount)} ETH (encrypted). TX: ${result.txHash}` 
       });
     } catch (error) {
       console.error("Error paying salary:", error);
