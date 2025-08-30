@@ -151,6 +151,9 @@ export default function SalaryPaymentPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [notification, setNotification] = useState<{ type: "success" | "error"; message: string } | null>(null)
   const [employees, setEmployees] = useState<Employee[]>(demoEmployees)
+  
+  // Get FHEVM instance from context at component level
+  const { instance: fhevm } = useFhevmContext()
 
   // Check if MetaMask is available
   useEffect(() => {
@@ -261,9 +264,6 @@ export default function SalaryPaymentPage() {
 
       // Real FHEVM transaction would go here
       console.log("Initiating real FHEVM transaction...");
-      
-      // Get FHEVM instance from context
-      const { instance: fhevm } = useFhevmContext();
       
       if (!fhevm) {
         throw new Error("FHEVM not initialized");
