@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from "react"
 import { Building2, Users, EyeOff, CheckCircle, AlertCircle, Loader2, Wallet } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Badge } from "@/components/ui/badge"
-import { salaryApi, API_CONFIG } from "@/lib/api"
+import { Button } from "../../components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card"
+import { Input } from "../../components/ui/input"
+import { Label } from "../../components/ui/label"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs"
+import { Alert, AlertDescription } from "../../components/ui/alert"
+import { Badge } from "../../components/ui/badge"
+import { salaryApi, API_CONFIG } from "../../lib/api"
 
 interface Employee {
   address: string
