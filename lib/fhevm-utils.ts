@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { createInstance, initSDK, SepoliaConfig } from "@zama-fhe/relayer-sdk";
 
 // Contract configuration
-export const CONTRACT_ADDRESS = "0x4a3401547b8607612328334C947e7E011eBC4312";
+export const CONTRACT_ADDRESS = "0x71864F70Dbc4CF7135db460e6d7aAdb8dA627875";
 export const CONTRACT_ABI = [
   "function paySalary(address employeeAddress) external payable",
   "function addEmployee(address employeeAddress, euint32 baseSalary, euint32 kpiBonus, euint32 taskBonus) external",
