@@ -82,7 +82,8 @@ export async function paySalaryWithFHE(
   // Create provider with explicit network configuration to avoid ENS issues
   const provider = new ethers.BrowserProvider(eth, {
     chainId: 9746, // FHEVM testnet
-    name: "fhevm-testnet"
+    name: "fhevm-testnet",
+    ensAddress: null // 🔑 отключаем ENS
   });
   const signer = await provider.getSigner();
   const userAddress = await signer.getAddress();
@@ -145,7 +146,8 @@ export async function addEmployeeWithFHE(
   // Create provider with explicit network configuration to avoid ENS issues
   const provider = new ethers.BrowserProvider(eth, {
     chainId: 9746, // FHEVM testnet
-    name: "fhevm-testnet"
+    name: "fhevm-testnet",
+    ensAddress: null // 🔑 отключаем ENS
   });
   const signer = await provider.getSigner();
   const userAddress = await signer.getAddress();
@@ -205,7 +207,8 @@ export async function registerCompany(name: string) {
   // Create provider with explicit network configuration to avoid ENS issues
   const provider = new ethers.BrowserProvider(eth, {
     chainId: 9746, // FHEVM testnet
-    name: "fhevm-testnet"
+    name: "fhevm-testnet",
+    ensAddress: null // 🔑 отключаем ENS
   });
   const signer = await provider.getSigner();
 
