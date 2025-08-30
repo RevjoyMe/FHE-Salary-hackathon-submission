@@ -80,11 +80,10 @@ export async function paySalaryWithFHE(
   await eth.request({ method: "eth_requestAccounts" });
   
   // Create provider with explicit network configuration to avoid ENS issues
-  const provider = new ethers.BrowserProvider(eth, {
-    chainId: 9746, // FHEVM testnet
-    name: "fhevm-testnet",
-    ensAddress: null // 🔑 отключаем ENS
-  });
+  const provider = new ethers.BrowserProvider(
+    eth,
+    new ethers.Network("fhevm-testnet", 9746) // ✅ без ENS
+  );
   const signer = await provider.getSigner();
   const userAddress = await signer.getAddress();
 
@@ -144,11 +143,10 @@ export async function addEmployeeWithFHE(
   await eth.request({ method: "eth_requestAccounts" });
   
   // Create provider with explicit network configuration to avoid ENS issues
-  const provider = new ethers.BrowserProvider(eth, {
-    chainId: 9746, // FHEVM testnet
-    name: "fhevm-testnet",
-    ensAddress: null // 🔑 отключаем ENS
-  });
+  const provider = new ethers.BrowserProvider(
+    eth,
+    new ethers.Network("fhevm-testnet", 9746) // ✅ без ENS
+  );
   const signer = await provider.getSigner();
   const userAddress = await signer.getAddress();
 
@@ -205,11 +203,10 @@ export async function registerCompany(name: string) {
   await eth.request({ method: "eth_requestAccounts" });
   
   // Create provider with explicit network configuration to avoid ENS issues
-  const provider = new ethers.BrowserProvider(eth, {
-    chainId: 9746, // FHEVM testnet
-    name: "fhevm-testnet",
-    ensAddress: null // 🔑 отключаем ENS
-  });
+  const provider = new ethers.BrowserProvider(
+    eth,
+    new ethers.Network("fhevm-testnet", 9746) // ✅ без ENS
+  );
   const signer = await provider.getSigner();
 
   console.log("Registering company:", name);
