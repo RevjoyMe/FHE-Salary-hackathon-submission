@@ -206,23 +206,28 @@ export function FhevmProvider({ children }: { children: ReactNode }) {
         
         const { createInstance, initSDK, SepoliaConfig } = relayerSDK;
         
-        // Wait for Relayer SDK to be available
-        let attempts = 0;
-        while (!(window as any).relayerSDK && attempts < 50) {
-          await new Promise(resolve => setTimeout(resolve, 100));
-          attempts++;
+        // Try to initialize SDK directly (fallback if CDN fails)
+        try {
+          console.log("Initializing SDK...");
+          await initSDK();
+          console.log("SDK initialized successfully");
+        } catch (sdkError) {
+          console.warn("SDK initialization failed, trying alternative method:", sdkError);
+          
+          // Wait for Relayer SDK to be available from CDN
+          let attempts = 0;
+          while (!(window as any).relayerSDK && attempts < 30) {
+            await new Promise(resolve => setTimeout(resolve, 200));
+            attempts++;
+          }
+          
+          if (!(window as any).relayerSDK) {
+            console.warn("Relayer SDK not loaded from CDN, using dynamic import only");
+          }
         }
-        
-        if (!(window as any).relayerSDK) {
-          throw new Error("Relayer SDK not loaded after 5 seconds");
-        }
-        
-        console.log("Relayer SDK loaded, initializing...");
-        
-        // Initialize SDK
-        await initSDK();
         
         // Create FHEVM instance with Sepolia config
+        console.log("Creating FHEVM instance...");
         const instance = await createInstance(SepoliaConfig);
         
         console.log("FHEVM initialized successfully:", instance);

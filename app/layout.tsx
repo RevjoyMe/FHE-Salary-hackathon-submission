@@ -23,13 +23,29 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={dmSans.variable}>
-      <head>
-        {/* Relayer SDK Script */}
-        <script
-          src="https://unpkg.com/@zama-fhe/relayer-sdk@latest/dist/relayer-sdk.js"
-          async
-        />
-      </head>
+                     <head>
+                 {/* Global polyfill for Relayer SDK */}
+                 <script
+                   dangerouslySetInnerHTML={{
+                     __html: `
+                       if (typeof global === 'undefined') {
+                         window.global = window;
+                       }
+                       if (typeof process === 'undefined') {
+                         window.process = { env: {} };
+                       }
+                     `
+                   }}
+                 />
+                 {/* Relayer SDK Script */}
+                 <script
+                   src="https://unpkg.com/@zama-fhe/relayer-sdk@0.1.2/dist/relayer-sdk.js"
+                   async
+                   onError={() => {
+                     console.warn('Failed to load Relayer SDK from CDN, will use dynamic import');
+                   }}
+                 />
+               </head>
       <body className={`${dmSans.className} bg-background text-foreground antialiased font-sans`}>
         <Providers>
           {children}
