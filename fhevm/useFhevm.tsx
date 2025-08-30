@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, createContext, useContext, ReactNode } from "react";
 import type { FhevmInstance } from "./fhevmTypes";
 import { createFhevmInstance } from "./internal/fhevm";
 
@@ -166,4 +166,64 @@ export function useFhevm(parameters: {
   }, [_isRunning, _providerChanged]);
 
   return { instance, refresh, error, status };
+}
+
+// Create context for FHEVM
+const FhevmContext = createContext<{
+  instance: FhevmInstance | undefined;
+  refresh: () => void;
+  error: Error | undefined;
+  status: FhevmGoState;
+} | null>(null);
+
+// Provider component
+export function FhevmProvider({ children }: { children: ReactNode }) {
+  const [provider, setProvider] = useState<ethers.Eip1193Provider | undefined>(undefined);
+  const [chainId, setChainId] = useState<number | undefined>(undefined);
+
+  // Initialize provider from window.ethereum
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.ethereum) {
+      setProvider(window.ethereum);
+      
+      // Get initial chainId
+      window.ethereum.request({ method: 'eth_chainId' })
+        .then((chainIdHex: string) => {
+          setChainId(parseInt(chainIdHex, 16));
+        })
+        .catch(console.error);
+
+      // Listen for chain changes
+      const handleChainChanged = (chainIdHex: string) => {
+        setChainId(parseInt(chainIdHex, 16));
+      };
+
+      window.ethereum.on('chainChanged', handleChainChanged);
+
+      return () => {
+        window.ethereum.removeListener('chainChanged', handleChainChanged);
+      };
+    }
+  }, []);
+
+  const fhevm = useFhevm({
+    provider,
+    chainId,
+    enabled: true,
+  });
+
+  return (
+    <FhevmContext.Provider value={fhevm}>
+      {children}
+    </FhevmContext.Provider>
+  );
+}
+
+// Hook to use FHEVM context
+export function useFhevmContext() {
+  const context = useContext(FhevmContext);
+  if (!context) {
+    throw new Error('useFhevmContext must be used within a FhevmProvider');
+  }
+  return context;
 }

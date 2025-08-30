@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useFhevm } from "../fhevm/useFhevm";
+import { useFhevmContext } from "../fhevm/useFhevm";
 import { useMetaMaskEthersSigner } from "./metamask/useMetaMaskEthersSigner";
 import { TFHE } from "@zama-fhe/relayer-sdk";
 
@@ -38,7 +38,7 @@ export interface Company {
 }
 
 export function useConfidentialSalary(contractAddress?: string) {
-  const { fhevm } = useFhevm();
+  const { instance: fhevm } = useFhevmContext();
   const { signer, isConnected } = useMetaMaskEthersSigner();
   const [contract, setContract] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
