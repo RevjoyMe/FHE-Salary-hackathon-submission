@@ -1,252 +1,229 @@
-# Salary System - Confidential Payroll Management
+# Confidential Salary System
 
-A full-stack application for managing employee salaries with complete privacy using Fully Homomorphic Encryption (FHE) technology.
+A FHE-powered confidential salary payment system built on Sepolia testnet using Zama's FHEVM technology.
 
-## 🏗️ Project Structure
+## Features
 
-```
-Salary/
-├── frontend/          # Next.js frontend application
-├── backend/           # Hardhat + FHE smart contracts
-└── README.md         # This file
-```
+- **Real MetaMask Integration**: Connect your wallet to interact with the smart contract
+- **Demo Employees**: Pre-loaded employees with KPI scores and task completion data
+- **Payment Plans**: Automatic calculation of bonuses based on performance
+- **FHE Encryption**: All salary data is encrypted using Fully Homomorphic Encryption
+- **Sepolia Testnet**: Deployed on Ethereum Sepolia testnet for testing
 
-## 🚀 Quick Start
+## Demo Data
+
+The system includes 4 demo employees:
+
+1. **John Smith** - Senior Developer (KPI: 92%, Tasks: 18/20)
+2. **Sarah Johnson** - Product Manager (KPI: 88%, Tasks: 16/18)
+3. **Michael Chen** - UX Designer (KPI: 95%, Tasks: 19/20)
+4. **Emily Davis** - DevOps Engineer (KPI: 85%, Tasks: 17/20)
+
+## Smart Contract Features
+
+- **Company Registration**: Register your company on the blockchain
+- **Employee Management**: Add employees with encrypted salary data
+- **Salary Payments**: Process confidential salary payments
+- **Performance Tracking**: KPI and task-based bonus calculations
+- **FHE Integration**: All sensitive data is encrypted using Zama's FHE technology
+
+## Technology Stack
+
+- **Frontend**: Next.js 14, React 18, TypeScript
+- **Styling**: Tailwind CSS, shadcn/ui components
+- **Blockchain**: Ethereum Sepolia testnet
+- **FHE**: Zama FHEVM (@zama-fhe/relayer-sdk)
+- **Wallet**: MetaMask integration
+- **Deployment**: Vercel
+
+## Quick Start
 
 ### Prerequisites
 
-- Node.js 18+ 
-- npm or pnpm
-- MetaMask browser extension
-- Git
+1. **MetaMask**: Install MetaMask browser extension
+2. **Sepolia ETH**: Get test ETH from [Sepolia Faucet](https://sepoliafaucet.com/)
+3. **Node.js**: Version 18 or higher
 
-### 1. Clone and Setup
+### Installation
 
 ```bash
-# Navigate to the project directory
-cd Hackcaton/Salary
+# Clone the repository
+git clone https://github.com/RevjoyMe/FHE-Salary-hackathon-submission.git
+cd FHE-Salary-hackathon-submission
 
-# Install frontend dependencies
-cd frontend
+# Install dependencies
 npm install
 
-# Install backend dependencies
-cd ../backend/packages/fhevm-hardhat-template
-npm install
-```
-
-### 2. Environment Configuration
-
-Create a `.env.local` file in the `frontend` directory:
-
-```env
-# Frontend Environment Configuration
-NEXT_PUBLIC_BACKEND_URL=http://localhost:8545
-NEXT_PUBLIC_CONTRACT_ADDRESS=0x5FbDB2315678afecb367f032d93F642f64180aa3
-NEXT_PUBLIC_NETWORK_ID=31337
-NEXT_PUBLIC_NETWORK_NAME=Hardhat
-NEXT_PUBLIC_FHE_ENABLED=true
-NEXT_PUBLIC_DEV_MODE=true
-```
-
-### 3. Deploy Smart Contracts
-
-```bash
-# Navigate to backend
-cd backend/packages/fhevm-hardhat-template
-
-# Start local Hardhat node
-npx hardhat node
-
-# In a new terminal, deploy contracts
-npx hardhat deploy --network localhost
-```
-
-### 4. Start Frontend
-
-```bash
-# Navigate to frontend
-cd frontend
-
-# Start development server
+# Run development server
 npm run dev
 ```
 
-The application will be available at `http://localhost:3000`
+### Smart Contract Deployment
 
-## 🔧 Configuration
+1. **Setup Hardhat Environment**:
+   ```bash
+   # Install Hardhat
+   npm install -g hardhat
+   
+   # Create hardhat config
+   npx hardhat init
+   ```
 
-### Frontend Configuration
+2. **Configure Environment Variables**:
+   Create `.env.local` file:
+   ```
+   MNEMONIC=your_wallet_mnemonic_phrase
+   INFURA_API_KEY=your_infura_api_key
+   SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/YOUR_API_KEY
+   ```
 
-The frontend is configured to connect to the Hardhat local network by default. Key configuration files:
+3. **Deploy Contract**:
+   ```bash
+   # Compile contracts
+   npx hardhat compile
+   
+   # Deploy to Sepolia
+   npx hardhat run scripts/deploy.js --network sepolia
+   ```
 
-- `next.config.mjs` - Next.js configuration with API proxy
-- `lib/api.ts` - API client for backend communication
-- `.env.local` - Environment variables
+4. **Update Contract Address**:
+   After deployment, update the contract address in your frontend configuration.
 
-### Backend Configuration
+### Using the Application
 
-The backend uses Hardhat with FHE support:
+1. **Connect Wallet**: Click "Connect Wallet" to connect your MetaMask
+2. **Switch to Sepolia**: Ensure MetaMask is connected to Sepolia testnet
+3. **View Employees**: Browse the demo employees with their KPI and task data
+4. **Payment Plans**: View detailed payment breakdowns for each employee
+5. **Process Payments**: Click "Pay Salary" to simulate salary payments
 
-- `hardhat.config.ts` - Hardhat configuration
-- `contracts/ConfidentialSalary.sol` - Main smart contract
-- `deploy/deploy.ts` - Deployment script
+## FHE Integration
 
-## 🏛️ Smart Contract Architecture
+The system uses Zama's FHEVM for confidential salary management:
 
-### ConfidentialSalary Contract
+- **Encrypted Salaries**: All salary amounts are encrypted on-chain
+- **Private Calculations**: KPI and task bonuses are calculated privately
+- **Verifiable Payments**: Payments are verified without revealing amounts
+- **Company Privacy**: Only authorized companies can access encrypted data
 
-The main contract provides the following functions:
+## Contract Functions
 
-#### Company Management
-- `registerCompany(string name)` - Register a new company
-- `getCompanyInfo(address)` - Get company information
-- `getCompanyEmployees(address)` - Get company employees
+### Company Management
+- `registerCompany(string name)`: Register a new company
+- `getCompanyInfo(address companyAddress)`: Get company information
 
-#### Employee Management
-- `addEmployee(address, encryptedSalary, proof)` - Add employee with encrypted salary
-- `getEmployeeInfo(address)` - Get employee information
-- `deactivateEmployee(address)` - Deactivate employee
+### Employee Management
+- `addEmployee(address employeeAddress, euint32 baseSalary, euint32 kpiBonus, euint32 taskBonus)`: Add employee with encrypted salary
+- `getEmployeeInfo(address companyAddress, address employeeAddress)`: Get employee information
+- `deactivateEmployee(address employeeAddress)`: Deactivate an employee
 
-#### Salary Management
-- `paySalary(address)` - Pay salary to employee
-- `getEmployeeSalary(address)` - Get encrypted salary
-- `getCompanyPayroll(address)` - Get encrypted total payroll
+### Salary Processing
+- `paySalary(address employeeAddress)`: Process salary payment
+- `getEmployeeSalary(address companyAddress, address employeeAddress)`: Get encrypted salary
+- `getTotalPayroll(address companyAddress)`: Get encrypted total payroll
 
-### FHE Integration
+## Security Features
 
-The contract uses Zama's FHE technology to:
-- Encrypt salary amounts using `euint32`
-- Perform encrypted calculations
-- Maintain privacy while enabling verification
+- **Access Control**: Only registered companies can manage their employees
+- **Encrypted Data**: All sensitive salary information is encrypted
+- **Event Logging**: All operations are logged as blockchain events
+- **Input Validation**: Comprehensive validation of all inputs
 
-## 🎯 Features
+## Development
 
-### Frontend Features
-- **Company Registration** - Register and manage company information
-- **Employee Management** - Add, view, and manage employees
-- **Salary Payments** - Process encrypted salary payments
-- **Real-time Updates** - Live updates from blockchain
-- **Responsive Design** - Works on desktop and mobile
-
-### Backend Features
-- **FHE Encryption** - Fully homomorphic encryption for salaries
-- **Smart Contract** - Ethereum-based payroll management
-- **Event Logging** - Comprehensive event tracking
-- **Security** - Access control and validation
-
-## 🔐 Security Features
-
-- **FHE Encryption** - Salaries are encrypted and remain private
-- **Access Control** - Only authorized companies can manage their employees
-- **Input Validation** - Comprehensive validation of all inputs
-- **Event Logging** - All actions are logged on the blockchain
-
-## 🧪 Testing
-
-### Frontend Testing
-```bash
-cd frontend
-npm run test
+### Project Structure
 ```
-
-### Backend Testing
-```bash
-cd backend/packages/fhevm-hardhat-template
-npx hardhat test
+├── app/                    # Next.js app directory
+│   ├── salary-payment/     # Main salary payment page
+│   ├── layout.tsx         # Root layout with providers
+│   └── providers.tsx      # FHEVM providers
+├── components/            # UI components
+├── hooks/                 # Custom React hooks
+│   ├── metamask/         # MetaMask integration
+│   └── useConfidentialSalary.tsx # Contract interaction
+├── fhevm/                # FHEVM integration
+├── contracts/            # Smart contracts
+└── public/              # Static assets
 ```
-
-## 📦 Deployment
-
-### Local Development
-1. Start Hardhat node: `npx hardhat node`
-2. Deploy contracts: `npx hardhat deploy --network localhost`
-3. Start frontend: `npm run dev`
-
-### Testnet Deployment (Sepolia)
-1. Set environment variables for Sepolia
-2. Deploy contracts: `npx hardhat deploy --network sepolia`
-3. Update frontend configuration with deployed contract address
-
-### Production Deployment
-1. Configure production environment variables
-2. Deploy to mainnet: `npx hardhat deploy --network mainnet`
-3. Deploy frontend to hosting service (Vercel, Netlify, etc.)
-
-## 🔧 Development
 
 ### Adding New Features
 
-1. **Smart Contract Changes**
-   - Modify `contracts/ConfidentialSalary.sol`
-   - Add tests in `test/` directory
-   - Update deployment script if needed
+1. **New Contract Functions**: Add to `ConfidentialSalary.sol`
+2. **Frontend Integration**: Update `useConfidentialSalary.tsx`
+3. **UI Components**: Create new components in `components/`
+4. **Pages**: Add new pages in `app/`
 
-2. **Frontend Changes**
-   - Add new components in `components/` directory
-   - Update API client in `lib/api.ts`
-   - Add new pages in `app/` directory
+## Testing
 
-3. **Integration**
-   - Update API endpoints in `lib/api.ts`
-   - Test integration between frontend and backend
-   - Update documentation
+### Local Testing
+```bash
+# Run tests
+npm test
 
-### Code Style
+# Run with coverage
+npm run test:coverage
+```
 
-- **Frontend**: Follow Next.js and React best practices
-- **Backend**: Follow Solidity style guide
-- **Documentation**: Keep README and comments up to date
+### Contract Testing
+```bash
+# Test smart contracts
+npx hardhat test
 
-## 🐛 Troubleshooting
+# Test on local network
+npx hardhat node
+npx hardhat test --network localhost
+```
+
+## Deployment
+
+### Vercel Deployment
+The application is automatically deployed to Vercel:
+
+1. **Build**: `npm run build`
+2. **Deploy**: Automatic deployment on push to main branch
+3. **Environment**: Production environment with optimized build
+
+### Contract Deployment
+```bash
+# Deploy to Sepolia
+npx hardhat run scripts/deploy.js --network sepolia
+
+# Verify contract
+npx hardhat verify --network sepolia CONTRACT_ADDRESS
+```
+
+## Troubleshooting
 
 ### Common Issues
 
-1. **MetaMask Connection Failed**
-   - Ensure MetaMask is installed and unlocked
-   - Check if you're connected to the correct network
-   - Clear browser cache and try again
+1. **MetaMask Connection Failed**:
+   - Ensure MetaMask is installed
+   - Check if Sepolia network is added
+   - Verify wallet has Sepolia ETH
 
-2. **Contract Deployment Failed**
-   - Check Hardhat node is running
-   - Verify network configuration
-   - Check for compilation errors
+2. **Contract Interaction Errors**:
+   - Check contract address is correct
+   - Verify network connection
+   - Ensure sufficient gas fees
 
-3. **FHE Encryption Issues**
-   - Ensure FHE dependencies are installed
-   - Check FHE configuration in hardhat.config.ts
-   - Verify FHE network is accessible
+3. **FHE Encryption Issues**:
+   - Check FHEVM initialization
+   - Verify relayer connection
+   - Check browser console for errors
 
-### Debug Mode
+### Support
 
-Enable debug mode by setting `NEXT_PUBLIC_DEV_MODE=true` in your environment variables.
+For issues and questions:
+- Check the [Zama FHEVM Documentation](https://docs.zama.ai/fhevm)
+- Review [FHEVM React Template](https://github.com/zama-ai/fhevm-react-template)
+- Open an issue on GitHub
 
-## 📚 Documentation
-
-- [Zama FHE Documentation](https://docs.zama.ai/)
-- [Hardhat Documentation](https://hardhat.org/docs)
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Ethereum Development](https://ethereum.org/developers/)
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Submit a pull request
-
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🆘 Support
+## Acknowledgments
 
-For support and questions:
-- Create an issue in the repository
-- Check the troubleshooting section
-- Review the documentation
-
----
-
-**Note**: This is a demonstration project for the Zama hackathon. For production use, additional security measures and testing should be implemented.
+- [Zama](https://zama.ai/) for FHEVM technology
+- [FHEVM React Template](https://github.com/zama-ai/fhevm-react-template) for integration examples
+- [shadcn/ui](https://ui.shadcn.com/) for UI components
