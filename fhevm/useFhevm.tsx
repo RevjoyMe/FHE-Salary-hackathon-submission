@@ -15,6 +15,9 @@ import { useCallback, useEffect, useRef, useState, createContext, useContext, Re
 import type { FhevmInstance } from "./fhevmTypes";
 import { createFhevmInstance } from "./internal/fhevm";
 
+// Import Relayer SDK directly
+import { createInstance, initSDK, SepoliaConfig } from "@zama-fhe/relayer-sdk";
+
 // Dynamic import to avoid SSR issues
 const getRelayerSDK = async () => {
   if (typeof window === 'undefined') return null;
@@ -31,7 +34,7 @@ const getRelayerSDK = async () => {
   (window as any).global = (window as any).global || window;
   (window as any).process = (window as any).process || { env: {} };
   
-  return await import("@zama-fhe/relayer-sdk/web");
+  return { createInstance, initSDK, SepoliaConfig };
 };
 
 function _assert(condition: boolean, message?: string): asserts condition {

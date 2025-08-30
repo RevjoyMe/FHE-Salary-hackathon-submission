@@ -12,6 +12,9 @@ if (typeof window !== 'undefined') {
 
 import { ethers } from "ethers";
 
+// Import Relayer SDK directly
+import { createInstance, initSDK, SepoliaConfig } from "@zama-fhe/relayer-sdk";
+
 // Dynamic import to avoid SSR issues
 const getRelayerSDK = async () => {
   if (typeof window === 'undefined') return null;
@@ -28,7 +31,7 @@ const getRelayerSDK = async () => {
   (window as any).global = (window as any).global || window;
   (window as any).process = (window as any).process || { env: {} };
   
-  return await import("@zama-fhe/relayer-sdk/web");
+  return { createInstance, initSDK, SepoliaConfig };
 };
 
 // Contract configuration
@@ -86,7 +89,7 @@ export async function paySalaryWithFHE(
   
   // Convert salary to bigint (in wei)
   const salaryInWei = ethers.parseEther(salaryAmount.toString());
-  input.add32(salaryInWei);
+  input.add64(salaryInWei);
   
   // Encrypt the input
   const encrypted = await input.encrypt();
@@ -144,9 +147,9 @@ export async function addEmployeeWithFHE(
   const kpiBonusWei = ethers.parseEther(kpiBonus.toString());
   const taskBonusWei = ethers.parseEther(taskBonus.toString());
   
-  input.add32(baseSalaryWei);
-  input.add32(kpiBonusWei);
-  input.add32(taskBonusWei);
+  input.add64(baseSalaryWei);
+  input.add64(kpiBonusWei);
+  input.add64(taskBonusWei);
   
   // Encrypt the inputs
   const encrypted = await input.encrypt();
