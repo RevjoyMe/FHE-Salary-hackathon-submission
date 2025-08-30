@@ -56,6 +56,16 @@ export const useConfidentialSalary = (parameters: {
     (ethersSigner: ethers.JsonRpcSigner | undefined) => boolean
   >;
 }) => {
+  // Check if we're on the client side
+  if (typeof window === 'undefined') {
+    return {
+      paySalary: async () => { throw new Error('Not available on server side') },
+      addEmployee: async () => { throw new Error('Not available on server side') },
+      registerCompany: async () => { throw new Error('Not available on server side') },
+      isLoading: false,
+      error: null
+    };
+  }
   const {
     instance,
     fhevmDecryptionSignatureStorage,

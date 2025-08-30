@@ -12,6 +12,8 @@ const nextConfig = {
   experimental: {
     esmExternals: 'loose',
   },
+  output: 'standalone',
+  trailingSlash: true,
 
   webpack: (config, { isServer }) => {
     if (!isServer) {
