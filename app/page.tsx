@@ -17,19 +17,57 @@ import {
   Wallet,
 } from "lucide-react"
 import { Button } from "../components/ui/button"
-// Import all page components
-import AnalyticsPage from "./analytics/page"
-import CommandCenterPage from "./command-center/page"
-import EmployeesPage from "./employees/page"
-import IntelligencePage from "./intelligence/page"
-import KPIPage from "./kpi/page"
-import OperationsPage from "./operations/page"
-import PayrollPage from "./payroll/page"
-import SalaryPage from "./salary/page"
-import SalaryPaymentPage from "./salary-payment/page"
-import SettingsPage from "./settings/page"
-import SystemsPage from "./systems/page"
-import TasksPage from "./tasks/page"
+// Import all page components dynamically
+import dynamicImport from "next/dynamic"
+
+const AnalyticsPage = dynamicImport(() => import("./analytics/page"), { 
+  ssr: false,
+  loading: () => <div className="p-6">Loading Analytics...</div>
+})
+const CommandCenterPage = dynamicImport(() => import("./command-center/page"), { 
+  ssr: false,
+  loading: () => <div className="p-6">Loading Command Center...</div>
+})
+const EmployeesPage = dynamicImport(() => import("./employees/page"), { 
+  ssr: false,
+  loading: () => <div className="p-6">Loading Employees...</div>
+})
+const IntelligencePage = dynamicImport(() => import("./intelligence/page"), { 
+  ssr: false,
+  loading: () => <div className="p-6">Loading Intelligence...</div>
+})
+const KPIPage = dynamicImport(() => import("./kpi/page"), { 
+  ssr: false,
+  loading: () => <div className="p-6">Loading KPI...</div>
+})
+const OperationsPage = dynamicImport(() => import("./operations/page"), { 
+  ssr: false,
+  loading: () => <div className="p-6">Loading Operations...</div>
+})
+const PayrollPage = dynamicImport(() => import("./payroll/page"), { 
+  ssr: false,
+  loading: () => <div className="p-6">Loading Payroll...</div>
+})
+const SalaryPage = dynamicImport(() => import("./salary/page"), { 
+  ssr: false,
+  loading: () => <div className="p-6">Loading Salary...</div>
+})
+const SalaryPaymentPage = dynamicImport(() => import("./salary-payment/page"), { 
+  ssr: false,
+  loading: () => <div className="p-6">Loading Salary Payment...</div>
+})
+const SettingsPage = dynamicImport(() => import("./settings/page"), { 
+  ssr: false,
+  loading: () => <div className="p-6">Loading Settings...</div>
+})
+const SystemsPage = dynamicImport(() => import("./systems/page"), { 
+  ssr: false,
+  loading: () => <div className="p-6">Loading Systems...</div>
+})
+const TasksPage = dynamicImport(() => import("./tasks/page"), { 
+  ssr: false,
+  loading: () => <div className="p-6">Loading Tasks...</div>
+})
 
 export default function HRDashboard() {
   const [activeSection, setActiveSection] = useState("overview")
