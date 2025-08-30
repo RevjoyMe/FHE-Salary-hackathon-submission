@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { useCallback, useEffect, useRef, useState, createContext, useContext, ReactNode } from "react";
 import type { FhevmInstance } from "./fhevmTypes";
 import { createFhevmInstance } from "./internal/fhevm";
-import { createInstance, initSDK, SepoliaConfig } from "@zama-fhe/relayer-sdk";
+import { createInstance, initSDK, SepoliaConfig } from "@zama-fhe/relayer-sdk/web";
 
 function _assert(condition: boolean, message?: string): asserts condition {
   if (!condition) {

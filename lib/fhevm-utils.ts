@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { createInstance, initSDK, SepoliaConfig } from "@zama-fhe/relayer-sdk";
+import { createInstance, initSDK, SepoliaConfig } from "@zama-fhe/relayer-sdk/web";
 
 // Contract configuration
 export const CONTRACT_ADDRESS = "0x71864F70Dbc4CF7135db460e6d7aAdb8dA627875";
