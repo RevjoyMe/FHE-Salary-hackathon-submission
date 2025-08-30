@@ -1,5 +1,10 @@
 import { ethers } from "ethers";
-import { createInstance, initSDK, SepoliaConfig } from "@zama-fhe/relayer-sdk/web";
+
+// Dynamic import to avoid SSR issues
+const getRelayerSDK = async () => {
+  if (typeof window === 'undefined') return null;
+  return await import("@zama-fhe/relayer-sdk/web");
+};
 
 // Contract configuration
 export const CONTRACT_ADDRESS = "0x71864F70Dbc4CF7135db460e6d7aAdb8dA627875";
@@ -14,6 +19,11 @@ export const CONTRACT_ABI = [
 
 // Initialize FHEVM instance
 export async function getFhevmInstance() {
+  const relayerSDK = await getRelayerSDK();
+  if (!relayerSDK) {
+    throw new Error("Relayer SDK not available");
+  }
+  const { createInstance, initSDK, SepoliaConfig } = relayerSDK;
   await initSDK();
   return await createInstance(SepoliaConfig);
 }
@@ -24,6 +34,11 @@ export async function paySalaryWithFHE(
   salaryAmount: number,
   fhevmInstance: any
 ) {
+  // Check if we're on client side
+  if (typeof window === 'undefined') {
+    throw new Error("This function can only be called on the client side");
+  }
+
   const eth = (window as any).ethereum;
   if (!eth) {
     throw new Error("MetaMask not found");

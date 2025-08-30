@@ -2,7 +2,11 @@ import { ethers } from "ethers";
 import { useCallback, useEffect, useRef, useState, createContext, useContext, ReactNode } from "react";
 import type { FhevmInstance } from "./fhevmTypes";
 import { createFhevmInstance } from "./internal/fhevm";
-import { createInstance, initSDK, SepoliaConfig } from "@zama-fhe/relayer-sdk/web";
+// Dynamic import to avoid SSR issues
+const getRelayerSDK = async () => {
+  if (typeof window === 'undefined') return null;
+  return await import("@zama-fhe/relayer-sdk/web");
+};
 
 function _assert(condition: boolean, message?: string): asserts condition {
   if (!condition) {
@@ -191,6 +195,16 @@ export function FhevmProvider({ children }: { children: ReactNode }) {
       try {
         setStatus("loading");
         console.log("Initializing FHEVM with Relayer SDK...");
+        
+        // Dynamic import to avoid SSR issues
+        const relayerSDK = await getRelayerSDK();
+        if (!relayerSDK) {
+          console.log("Relayer SDK not available on server, skipping...");
+          setStatus("idle");
+          return;
+        }
+        
+        const { createInstance, initSDK, SepoliaConfig } = relayerSDK;
         
         // Wait for Relayer SDK to be available
         let attempts = 0;

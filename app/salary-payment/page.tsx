@@ -157,10 +157,16 @@ export default function SalaryPaymentPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [notification, setNotification] = useState<{ type: "success" | "error"; message: string } | null>(null)
   const [employees, setEmployees] = useState<Employee[]>(demoEmployees)
+  const [isClient, setIsClient] = useState(false)
   
   // Get FHEVM instance from context at component level
   const fhevmContext = useFhevmContext()
   const fhevm = fhevmContext?.instance
+
+  // Check if we're on client side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Check if MetaMask is available
   useEffect(() => {
