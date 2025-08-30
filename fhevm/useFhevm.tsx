@@ -192,6 +192,19 @@ export function FhevmProvider({ children }: { children: ReactNode }) {
         setStatus("loading");
         console.log("Initializing FHEVM with Relayer SDK...");
         
+        // Wait for Relayer SDK to be available
+        let attempts = 0;
+        while (!(window as any).relayerSDK && attempts < 50) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+          attempts++;
+        }
+        
+        if (!(window as any).relayerSDK) {
+          throw new Error("Relayer SDK not loaded after 5 seconds");
+        }
+        
+        console.log("Relayer SDK loaded, initializing...");
+        
         // Initialize SDK
         await initSDK();
         

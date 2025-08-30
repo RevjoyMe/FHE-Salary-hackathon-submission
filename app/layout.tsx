@@ -23,6 +23,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={dmSans.variable}>
+      <head>
+        {/* Relayer SDK Script */}
+        <script
+          src="https://unpkg.com/@zama-fhe/relayer-sdk@latest/dist/relayer-sdk.js"
+          async
+        />
+      </head>
       <body className={`${dmSans.className} bg-background text-foreground antialiased font-sans`}>
         <Providers>
           {children}
