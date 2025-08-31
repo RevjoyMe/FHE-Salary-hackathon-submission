@@ -37,7 +37,7 @@ const demoEmployees: Employee[] = [
     id: "1",
     name: "Alice Johnson",
     position: "Senior Developer",
-    address: "0x8ba1f109551bD432803012645Hac136c772c3c3",
+    address: "0x8ba1f109551bD432803012645aac136c772c3c3",
     baseSalary: 0.08,
     kpiBonus: 0.01,
     taskBonus: 0.005,

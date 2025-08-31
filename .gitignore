@@ -34,5 +34,18 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# temp files
+# Hardhat
+cache/
+artifacts/
+typechain/
+typechain-types/
+
+# FHEVM
+fhevmTemp/
 temp-fhevm/
+
+# Packages (вложенные репозитории)
+packages/
+
+# Environment variables
+.env

@@ -286,20 +286,40 @@ export const createFhevmInstance = async (parameters: {
 
   const relayerSDK = (window as unknown as FhevmWindowType).relayerSDK;
 
-  const aclAddress = relayerSDK.SepoliaConfig.aclContractAddress;
-  if (!checkIsAddress(aclAddress)) {
-    throw new Error(`Invalid address: ${aclAddress}`);
+  // Для локального Hardhat используем mock конфигурацию
+  let config: FhevmInstanceConfig;
+  
+  if (isMock) {
+    // Локальный Hardhat - используем mock конфигурацию
+    config = {
+      network: providerOrUrl,
+      chainId: chainId,
+      aclContractAddress: "0x50157CFfD6bBFA2DECe204a89ec419c23ef5755D" as `0x${string}`, // FHEVM Hardhat ACL
+      verifyingContractAddressDecryption: "0xa02Cda4Ca3a71D7C46997716F4283aa851C28812" as `0x${string}`, // DecryptionOracle
+      verifyingContractAddressInputVerification: "0x901F8942346f7AB3a01F6D7613119Bca447Bb030" as `0x${string}`, // InputVerifier
+      kmsContractAddress: "0x1364cBBf2cDF5032C47d8226a6f6FBD2AFCDacAC" as `0x${string}`, // KMSVerifier
+      inputVerifierContractAddress: "0x901F8942346f7AB3a01F6D7613119Bca447Bb030" as `0x${string}`, // InputVerifier
+      gatewayChainId: 55815, // Gateway chain ID
+      publicKey: { data: new Uint8Array(0), id: null }, // Mock public key
+      publicParams: { "2048": { publicParamsId: "mock", publicParams: new Uint8Array(0) } }, // Mock params
+    };
+  } else {
+    // Sepolia - используем стандартную конфигурацию
+    const aclAddress = relayerSDK.SepoliaConfig.aclContractAddress;
+    if (!checkIsAddress(aclAddress)) {
+      throw new Error(`Invalid address: ${aclAddress}`);
+    }
+
+    const pub = await publicKeyStorageGet(aclAddress);
+    throwIfAborted();
+
+    config = {
+      ...relayerSDK.SepoliaConfig,
+      network: providerOrUrl,
+      publicKey: pub.publicKey,
+      publicParams: pub.publicParams,
+    };
   }
-
-  const pub = await publicKeyStorageGet(aclAddress);
-  throwIfAborted();
-
-  const config: FhevmInstanceConfig = {
-    ...relayerSDK.SepoliaConfig,
-    network: providerOrUrl,
-    publicKey: pub.publicKey,
-    publicParams: pub.publicParams,
-  };
 
   // notify that state === "creating"
   notify("creating");
@@ -307,11 +327,13 @@ export const createFhevmInstance = async (parameters: {
   const instance = await relayerSDK.createInstance(config);
 
   // Save the key even if aborted
-  await publicKeyStorageSet(
-    aclAddress,
-    instance.getPublicKey(),
-    instance.getPublicParams(2048)
-  );
+  if (!isMock) {
+    await publicKeyStorageSet(
+      config.aclContractAddress as `0x${string}`,
+      instance.getPublicKey(),
+      instance.getPublicParams(2048)
+    );
+  }
 
   throwIfAborted();
 
