@@ -20,7 +20,7 @@ export function Providers({ children }: ProvidersProps) {
   return (
     <MetaMaskProvider>
       <MetaMaskEthersSignerProvider initialMockChains={{
-        31337: "http://127.0.0.1:8545" // Локальный Hardhat
+        31337: "http://127.0.0.1:8545" // Локальный Hardhat - используем IP вместо localhost
       }}>
         <InMemoryStorageProvider>
           {children}

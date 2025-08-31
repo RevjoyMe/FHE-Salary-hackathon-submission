@@ -35,7 +35,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:8545/:path*', // Hardhat node
+        destination: 'http://127.0.0.1:8545/:path*', // Hardhat node - используем IP вместо localhost
       },
     ];
   },
