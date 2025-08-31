@@ -35,7 +35,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'https://rpc.ankr.com/anvil/:path*', // Публичный Anvil RPC
+        destination: 'http://127.0.0.1:8545/:path*', // Локальный Hardhat
       },
     ];
   },
