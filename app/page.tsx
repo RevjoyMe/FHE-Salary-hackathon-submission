@@ -17,6 +17,19 @@ import {
   Wallet,
 } from "lucide-react"
 import { Button } from "../components/ui/button"
+// Import all page components
+import AnalyticsPage from "./analytics/page"
+import CommandCenterPage from "./command-center/page"
+import EmployeesPage from "./employees/page"
+import IntelligencePage from "./intelligence/page"
+import KPIPage from "./kpi/page"
+import OperationsPage from "./operations/page"
+import PayrollPage from "./payroll/page"
+import SalaryPage from "./salary/page"
+import SalaryPaymentPage from "./salary-payment/page"
+import SettingsPage from "./settings/page"
+import SystemsPage from "./systems/page"
+import TasksPage from "./tasks/page"
 
 export default function HRDashboard() {
   const [activeSection, setActiveSection] = useState("overview")
@@ -133,13 +146,13 @@ export default function HRDashboard() {
         {/* Dashboard Content */}
         <div className="flex-1 overflow-auto bg-background">
           {activeSection === "overview" && <OverviewPage />}
-          {activeSection === "employees" && <div className="p-6">Employees Page - Coming Soon</div>}
-          {activeSection === "payroll" && <div className="p-6">Payroll Page - Coming Soon</div>}
-          {activeSection === "salary-payment" && <div className="p-6">Salary Payment Page - Coming Soon</div>}
-          {activeSection === "kpi" && <div className="p-6">KPI Page - Coming Soon</div>}
-          {activeSection === "tasks" && <div className="p-6">Tasks Page - Coming Soon</div>}
-          {activeSection === "analytics" && <div className="p-6">Analytics Page - Coming Soon</div>}
-          {activeSection === "settings" && <div className="p-6">Settings Page - Coming Soon</div>}
+          {activeSection === "employees" && <EmployeesPage />}
+          {activeSection === "payroll" && <PayrollPage />}
+          {activeSection === "salary-payment" && <SalaryPaymentPage />}
+          {activeSection === "kpi" && <KPIPage />}
+          {activeSection === "tasks" && <TasksPage />}
+          {activeSection === "analytics" && <AnalyticsPage />}
+          {activeSection === "settings" && <SettingsPage />}
         </div>
       </div>
     </div>

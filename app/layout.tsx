@@ -4,6 +4,7 @@ import { DM_Sans } from "next/font/google"
 
 export const dynamic = 'force-dynamic'
 import "./globals.css"
+import { Providers } from "./providers"
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -25,7 +26,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={dmSans.variable}>
       <body className={`${dmSans.className} bg-background text-foreground antialiased font-sans`}>
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   )
