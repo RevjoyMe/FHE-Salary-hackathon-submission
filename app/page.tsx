@@ -17,6 +17,7 @@ import {
   Wallet,
 } from "lucide-react"
 import { Button } from "../components/ui/button"
+import { useMetaMask } from "@/hooks/metamask/useMetaMaskProvider"
 // Import all page components
 import AnalyticsPage from "./analytics/page"
 import CommandCenterPage from "./command-center/page"
@@ -34,6 +35,7 @@ import TasksPage from "./tasks/page"
 export default function HRDashboard() {
   const [activeSection, setActiveSection] = useState("overview")
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const { isConnected, connect, accounts } = useMetaMask()
 
   return (
     <div className="flex h-screen bg-background">
@@ -134,6 +136,25 @@ export default function HRDashboard() {
           </div>
           <div className="flex items-center gap-4">
             <div className="text-xs text-muted-foreground">Last updated: {new Date().toLocaleDateString("en-US")}</div>
+            
+            {/* Wallet Connection Button */}
+            {!isConnected ? (
+              <Button 
+                onClick={connect}
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
+              >
+                <Wallet className="w-4 h-4 mr-2" />
+                Connect Wallet
+              </Button>
+            ) : (
+              <div className="flex items-center gap-2">
+                <div className="text-xs text-muted-foreground">
+                  {accounts?.[0]?.slice(0, 6)}...{accounts?.[0]?.slice(-4)}
+                </div>
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              </div>
+            )}
+            
             <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary">
               <Bell className="w-4 h-4" />
             </Button>
