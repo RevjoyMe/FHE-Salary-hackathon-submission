@@ -16,38 +16,23 @@ export function Providers({ children }: ProvidersProps) {
   );
 }
 
-// Export context values for use in components
+// Простой контекст для FHE - пока без сложной логики
 export const useFhevmContext = () => {
-  const { provider, chainId } = useMetaMask();
-  const { signer, readonlyProvider } = useMetaMaskEthersSigner();
-  
-  const { instance, refresh, error, status } = useFhevm({
-    provider,
-    chainId,
-    enabled: true,
-  });
-
-  const { storage: fhevmDecryptionSignatureStorage } = useInMemoryStorage();
-
-  const sameChain = useRef((chainId: number | undefined) => {
-    return chainId === 9746; // FHEVM testnet
-  });
-
-  const sameSigner = useRef((ethersSigner: ethers.JsonRpcSigner | undefined) => {
-    return ethersSigner === signer;
-  });
-
   return {
-    instance,
-    refresh,
-    error,
-    status,
-    provider,
-    chainId,
-    signer,
-    readonlyProvider,
-    fhevmDecryptionSignatureStorage,
-    sameChain,
-    sameSigner,
+    instance: undefined,
+    refresh: () => {},
+    error: null,
+    status: "initializing",
+    provider: undefined,
+    chainId: undefined,
+    signer: undefined,
+    readonlyProvider: undefined,
+    fhevmDecryptionSignatureStorage: {
+      get: () => null,
+      set: () => {},
+      remove: () => {},
+    },
+    sameChain: { current: () => false },
+    sameSigner: { current: () => false },
   };
 };

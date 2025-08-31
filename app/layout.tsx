@@ -2,7 +2,9 @@ import type React from "react"
 import type { Metadata } from "next"
 import { DM_Sans } from "next/font/google"
 
+export const dynamic = 'force-dynamic'
 import "./globals.css"
+import { Providers } from "./providers"
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
