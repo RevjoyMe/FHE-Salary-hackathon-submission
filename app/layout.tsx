@@ -4,11 +4,6 @@ import { DM_Sans } from "next/font/google"
 
 export const dynamic = 'force-dynamic'
 import "./globals.css"
-import { Providers } from "./providers"
-import { Scripts } from "./scripts"
-import { InMemoryStorageProvider } from "@/hooks/useInMemoryStorage"
-import { MetaMaskProvider } from "@/hooks/metamask/useMetaMaskProvider"
-import { MetaMaskEthersSignerProvider } from "@/hooks/metamask/useMetaMaskEthersSigner"
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -30,16 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={dmSans.variable}>
       <body className={`${dmSans.className} bg-background text-foreground antialiased font-sans`}>
-        <Scripts />
-        <InMemoryStorageProvider>
-          <MetaMaskProvider>
-            <MetaMaskEthersSignerProvider initialMockChains={{}}>
-              <Providers>
-                {children}
-              </Providers>
-            </MetaMaskEthersSignerProvider>
-          </MetaMaskProvider>
-        </InMemoryStorageProvider>
+        {children}
       </body>
     </html>
   )
