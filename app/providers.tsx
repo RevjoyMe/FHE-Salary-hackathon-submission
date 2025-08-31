@@ -19,7 +19,9 @@ interface ProvidersProps {
 export function Providers({ children }: ProvidersProps) {
   return (
     <MetaMaskProvider>
-      <MetaMaskEthersSignerProvider initialMockChains={{}}>
+      <MetaMaskEthersSignerProvider initialMockChains={{
+        31337: "http://127.0.0.1:8545" // Локальный Hardhat
+      }}>
         <InMemoryStorageProvider>
           {children}
         </InMemoryStorageProvider>
@@ -42,7 +44,7 @@ export const useFhevmContext = () => {
   const { storage: fhevmDecryptionSignatureStorage } = useInMemoryStorage();
 
   const sameChain = useRef((chainId: number | undefined) => {
-    return chainId === 9746; // FHEVM testnet
+    return chainId === 31337; // Локальный Hardhat
   });
 
   const sameSigner = useRef((ethersSigner: ethers.JsonRpcSigner | undefined) => {
