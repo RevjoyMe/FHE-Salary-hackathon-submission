@@ -3,6 +3,7 @@
 export const dynamic = 'force-dynamic'
 
 import { ReactNode } from "react";
+import { MetaMaskProvider } from "@/hooks/metamask/useMetaMaskProvider";
 
 interface ProvidersProps {
   children: ReactNode;
@@ -10,9 +11,9 @@ interface ProvidersProps {
 
 export function Providers({ children }: ProvidersProps) {
   return (
-    <>
+    <MetaMaskProvider>
       {children}
-    </>
+    </MetaMaskProvider>
   );
 }
 
