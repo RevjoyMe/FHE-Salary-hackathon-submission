@@ -191,7 +191,7 @@ async function resolve(
   let rpcUrl = typeof providerOrUrl === "string" ? providerOrUrl : undefined;
 
   const _mockChains: Record<number, string> = {
-    31337: "http://localhost:8545",
+    31337: "http://127.0.0.1:8545", // Используем IP вместо localhost для лучшей совместимости
     ...(mockChains ?? {}),
   };
 

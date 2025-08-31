@@ -1,7 +1,7 @@
 // API Configuration for Salary System
 export const API_CONFIG = {
   // Backend URLs
-  BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8545',
+  BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://127.0.0.1:8545', // Используем IP вместо localhost
   
   // Contract addresses
   CONTRACT_ADDRESSES: {
