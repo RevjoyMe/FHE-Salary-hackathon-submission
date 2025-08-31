@@ -2,8 +2,15 @@
 
 export const dynamic = 'force-dynamic'
 
-import { ReactNode } from "react";
+import { ReactNode, useRef } from "react";
 import { MetaMaskProvider } from "@/hooks/metamask/useMetaMaskProvider";
+import { MetaMaskEthersSignerProvider } from "@/hooks/metamask/useMetaMaskEthersSigner";
+import { InMemoryStorageProvider } from "@/hooks/useInMemoryStorage";
+import { useMetaMask } from "@/hooks/metamask/useMetaMaskProvider";
+import { useMetaMaskEthersSigner } from "@/hooks/metamask/useMetaMaskEthersSigner";
+import { useFhevm } from "@/fhevm/useFhevm";
+import { useInMemoryStorage } from "@/hooks/useInMemoryStorage";
+import { ethers } from "ethers";
 
 interface ProvidersProps {
   children: ReactNode;
@@ -12,28 +19,47 @@ interface ProvidersProps {
 export function Providers({ children }: ProvidersProps) {
   return (
     <MetaMaskProvider>
-      {children}
+      <MetaMaskEthersSignerProvider initialMockChains={{}}>
+        <InMemoryStorageProvider>
+          {children}
+        </InMemoryStorageProvider>
+      </MetaMaskEthersSignerProvider>
     </MetaMaskProvider>
   );
 }
 
-// Простой контекст для FHE - пока без сложной логики
+// Полный контекст для FHE с реальной функциональностью
 export const useFhevmContext = () => {
+  const { provider, chainId } = useMetaMask();
+  const { ethersSigner, ethersReadonlyProvider } = useMetaMaskEthersSigner();
+  
+  const { instance, refresh, error, status } = useFhevm({
+    provider,
+    chainId,
+    enabled: true,
+  });
+
+  const { storage: fhevmDecryptionSignatureStorage } = useInMemoryStorage();
+
+  const sameChain = useRef((chainId: number | undefined) => {
+    return chainId === 9746; // FHEVM testnet
+  });
+
+  const sameSigner = useRef((ethersSigner: ethers.JsonRpcSigner | undefined) => {
+    return ethersSigner === ethersSigner;
+  });
+
   return {
-    instance: undefined,
-    refresh: () => {},
-    error: null,
-    status: "initializing",
-    provider: undefined,
-    chainId: undefined,
-    signer: undefined,
-    readonlyProvider: undefined,
-    fhevmDecryptionSignatureStorage: {
-      get: () => null,
-      set: () => {},
-      remove: () => {},
-    },
-    sameChain: { current: () => false },
-    sameSigner: { current: () => false },
+    instance,
+    refresh,
+    error,
+    status,
+    provider,
+    chainId,
+    signer: ethersSigner,
+    readonlyProvider: ethersReadonlyProvider,
+    fhevmDecryptionSignatureStorage,
+    sameChain,
+    sameSigner,
   };
 };

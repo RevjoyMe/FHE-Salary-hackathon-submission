@@ -6,6 +6,9 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useFhevmContext } from "../providers";
+import { useConfidentialSalary } from "@/hooks/useConfidentialSalary";
+import { ethers } from "ethers";
 
 interface Employee {
   id: string;
@@ -118,15 +121,66 @@ const demoPaymentPlans: PaymentPlan[] = [
 ];
 
 export default function SalaryPaymentPage() {
+  const [isClient, setIsClient] = useState(false);
   const [employees, setEmployees] = useState<Employee[]>(demoEmployees);
   const [paymentPlans, setPaymentPlans] = useState<PaymentPlan[]>(demoPaymentPlans);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState<string>("");
 
-  const handlePayment = async (employee: Employee) => {
-    setIsProcessing(true);
-    // Simulate payment processing
-    setTimeout(() => {
+  // Get FHEVM context
+  const {
+    instance,
+    status: fhevmStatus,
+    error: fhevmError,
+    provider,
+    chainId,
+    signer,
+    readonlyProvider,
+    fhevmDecryptionSignatureStorage,
+    sameChain,
+    sameSigner,
+  } = useFhevmContext();
+
+  // Use Confidential Salary hook
+  const {
+    paySalary,
+    addEmployee,
+    registerCompany,
+    isLoading,
+    error: contractError,
+  } = useConfidentialSalary({
+    instance,
+    fhevmDecryptionSignatureStorage,
+    eip1193Provider: provider,
+    chainId,
+    ethersSigner: signer,
+    ethersReadonlyProvider: readonlyProvider,
+    sameChain,
+    sameSigner,
+  });
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const formatEthAmount = (amount: number) => {
+    return `${amount.toFixed(3)} ETH`;
+  };
+
+  const handlePaySalary = async (employee: Employee) => {
+    if (!instance || !signer) {
+      setPaymentStatus("❌ FHEVM not initialized or wallet not connected");
+      return;
+    }
+
+    try {
+      setPaymentStatus("🔄 Processing salary payment with FHE encryption...");
+      
+      const result = await paySalary(employee.address, employee.totalSalary);
+      
+      setPaymentStatus(`✅ Salary paid successfully with FHE! TX: ${result.txHash}`);
+      
+      // Update payment plan status
       setPaymentPlans(prev => 
         prev.map(plan => 
           plan.employeeId === employee.id 
@@ -134,61 +188,84 @@ export default function SalaryPaymentPage() {
             : plan
         )
       );
-      setIsProcessing(false);
-    }, 2000);
+      
+    } catch (error) {
+      console.error("Failed to pay salary:", error);
+      setPaymentStatus(`❌ Failed to pay salary: ${error instanceof Error ? error.message : "Unknown error"}`);
+    }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "paid":
-        return <Badge className="bg-green-100 text-green-800">Paid</Badge>;
-      case "pending":
-        return <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>;
-      case "failed":
-        return <Badge className="bg-red-100 text-red-800">Failed</Badge>;
+      case "ready":
+        return <Badge className="bg-green-500">Ready</Badge>;
+      case "loading":
+        return <Badge className="bg-yellow-500">Loading</Badge>;
+      case "error":
+        return <Badge className="bg-red-500">Error</Badge>;
       default:
-        return <Badge variant="outline">Unknown</Badge>;
+        return <Badge variant="outline">Idle</Badge>;
     }
   };
+
+  if (!isClient) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Salary Payment System</h1>
+          <h1 className="text-3xl font-bold text-foreground">Confidential Salary Payment</h1>
           <p className="text-muted-foreground mt-2">
             Manage confidential salary payments using FHE technology
           </p>
         </div>
-        <div className="flex gap-3">
-          <Button variant="outline">Export Report</Button>
-          <Button>New Payment Batch</Button>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-gray-600">FHEVM Status:</span>
+          {getStatusBadge(fhevmStatus)}
         </div>
       </div>
 
-      {/* FHE Status */}
+      {/* FHEVM Status */}
       <Card className="border-blue-200 bg-blue-50">
         <CardHeader>
-          <CardTitle className="text-blue-800">FHE System Status</CardTitle>
-          <CardDescription>
-            Fully Homomorphic Encryption is currently being configured
-          </CardDescription>
+          <CardTitle className="text-blue-800">FHEVM Connection Status</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
-            <span className="text-blue-700">FHE Integration in Progress</span>
+          <div className="space-y-2">
+            <p><strong>Status:</strong> {fhevmStatus}</p>
+            <p><strong>Chain ID:</strong> {chainId || "Not connected"}</p>
+            <p><strong>Wallet:</strong> {signer ? "Connected" : "Not connected"}</p>
+            {fhevmError && (
+              <p className="text-red-500"><strong>Error:</strong> {fhevmError.message}</p>
+            )}
+            {contractError && (
+              <p className="text-red-500"><strong>Contract Error:</strong> {contractError}</p>
+            )}
           </div>
         </CardContent>
       </Card>
 
-      {/* Employee List */}
+      {/* Payment Status */}
+      {paymentStatus && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Payment Status</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className={paymentStatus.includes("❌") ? "text-red-500" : "text-green-500"}>
+              {paymentStatus}
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Employees */}
       <Card>
         <CardHeader>
-          <CardTitle>Employees & Salaries</CardTitle>
-          <CardDescription>
-            View employee information and process salary payments
-          </CardDescription>
+          <CardTitle>Employees</CardTitle>
+          <CardDescription>Manage employee salary payments with FHE encryption</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -216,10 +293,10 @@ export default function SalaryPaymentPage() {
                 
                 <div className="text-right">
                   <div className="text-2xl font-bold text-foreground">
-                    {employee.totalSalary} ETH
+                    {formatEthAmount(employee.totalSalary)}
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    Base: {employee.baseSalary} | KPI: +{employee.kpiBonus} | Tasks: +{employee.taskBonus}
+                    Base: {formatEthAmount(employee.baseSalary)} | KPI: +{formatEthAmount(employee.kpiBonus)} | Tasks: +{formatEthAmount(employee.taskBonus)}
                   </div>
                   <div className="text-xs text-muted-foreground mt-1">
                     Last: {employee.lastPaymentDate}
@@ -228,11 +305,11 @@ export default function SalaryPaymentPage() {
 
                 <div className="ml-6">
                   <Button
-                    onClick={() => handlePayment(employee)}
-                    disabled={isProcessing}
+                    onClick={() => handlePaySalary(employee)}
+                    disabled={!instance || !signer || isLoading}
                     className="min-w-[120px]"
                   >
-                    {isProcessing ? "Processing..." : "Pay Salary"}
+                    {isLoading ? "Processing..." : "Pay Salary"}
                   </Button>
                 </div>
               </div>
@@ -245,9 +322,7 @@ export default function SalaryPaymentPage() {
       <Card>
         <CardHeader>
           <CardTitle>Payment Plans</CardTitle>
-          <CardDescription>
-            Track salary payment status and history
-          </CardDescription>
+          <CardDescription>Current payment schedule</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -267,13 +342,15 @@ export default function SalaryPaymentPage() {
                     <div>
                       <span className="font-medium">{employee?.name || 'Unknown Employee'}</span>
                       <span className="text-sm text-muted-foreground ml-2">
-                        {plan.amount} ETH
+                        {formatEthAmount(plan.amount)}
                       </span>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="text-sm text-muted-foreground">{plan.date}</span>
-                    {getStatusBadge(plan.status)}
+                    <Badge variant={plan.status === "paid" ? "default" : "secondary"}>
+                      {plan.status}
+                    </Badge>
                   </div>
                 </div>
               );
