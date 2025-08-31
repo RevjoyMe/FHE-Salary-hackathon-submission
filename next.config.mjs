@@ -35,7 +35,8 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://127.0.0.1:8545/:path*', // Hardhat node - используем IP вместо localhost
+        destination: 'https://rpc.sepolia.org/:path*', // Временно используем публичный RPC для тестирования
+        // destination: 'http://127.0.0.1:8545/:path*', // Локальный Hardhat - закомментировано
       },
     ];
   },

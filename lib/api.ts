@@ -1,7 +1,7 @@
 // API Configuration for Salary System
 export const API_CONFIG = {
   // Backend URLs
-  BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://127.0.0.1:8545', // Используем IP вместо localhost
+  BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL || 'https://rpc.sepolia.org', // Временно используем публичный RPC
   
   // Contract addresses
   CONTRACT_ADDRESSES: {
