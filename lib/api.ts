@@ -1,7 +1,7 @@
 // API Configuration for Salary System
 export const API_CONFIG = {
   // Backend URLs
-  BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://127.0.0.1:8545', // Локальный Hardhat
+  BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL || 'https://rpc.ankr.com/anvil', // Публичный Anvil RPC
   
   // Contract addresses
   CONTRACT_ADDRESSES: {

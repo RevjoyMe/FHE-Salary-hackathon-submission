@@ -191,7 +191,7 @@ async function resolve(
   let rpcUrl = typeof providerOrUrl === "string" ? providerOrUrl : undefined;
 
   const _mockChains: Record<number, string> = {
-    31337: "http://127.0.0.1:8545", // Локальный Hardhat
+    31337: "https://rpc.ankr.com/anvil", // Публичный Anvil RPC для FHE
     ...(mockChains ?? {}),
   };
 

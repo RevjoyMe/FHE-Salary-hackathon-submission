@@ -20,7 +20,7 @@ export function Providers({ children }: ProvidersProps) {
   return (
     <MetaMaskProvider>
       <MetaMaskEthersSignerProvider initialMockChains={{
-        31337: "http://127.0.0.1:8545", // Локальный Hardhat
+        31337: "https://rpc.ankr.com/anvil", // Публичный Anvil RPC для FHE
       }}>
         <InMemoryStorageProvider>
           {children}
@@ -44,7 +44,7 @@ export const useFhevmContext = () => {
   const { storage: fhevmDecryptionSignatureStorage } = useInMemoryStorage();
 
   const sameChain = useRef((chainId: number | undefined) => {
-    return chainId === 31337; // Локальный Hardhat
+    return chainId === 31337; // Anvil RPC
   });
 
   const sameSigner = useRef((ethersSigner: ethers.JsonRpcSigner | undefined) => {
