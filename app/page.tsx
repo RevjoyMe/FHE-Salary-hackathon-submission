@@ -17,57 +17,6 @@ import {
   Wallet,
 } from "lucide-react"
 import { Button } from "../components/ui/button"
-// Import all page components dynamically
-import dynamicImport from "next/dynamic"
-
-const AnalyticsPage = dynamicImport(() => import("./analytics/page"), { 
-  ssr: false,
-  loading: () => <div className="p-6">Loading Analytics...</div>
-})
-const CommandCenterPage = dynamicImport(() => import("./command-center/page"), { 
-  ssr: false,
-  loading: () => <div className="p-6">Loading Command Center...</div>
-})
-const EmployeesPage = dynamicImport(() => import("./employees/page"), { 
-  ssr: false,
-  loading: () => <div className="p-6">Loading Employees...</div>
-})
-const IntelligencePage = dynamicImport(() => import("./intelligence/page"), { 
-  ssr: false,
-  loading: () => <div className="p-6">Loading Intelligence...</div>
-})
-const KPIPage = dynamicImport(() => import("./kpi/page"), { 
-  ssr: false,
-  loading: () => <div className="p-6">Loading KPI...</div>
-})
-const OperationsPage = dynamicImport(() => import("./operations/page"), { 
-  ssr: false,
-  loading: () => <div className="p-6">Loading Operations...</div>
-})
-const PayrollPage = dynamicImport(() => import("./payroll/page"), { 
-  ssr: false,
-  loading: () => <div className="p-6">Loading Payroll...</div>
-})
-const SalaryPage = dynamicImport(() => import("./salary/page"), { 
-  ssr: false,
-  loading: () => <div className="p-6">Loading Salary...</div>
-})
-const SalaryPaymentPage = dynamicImport(() => import("./salary-payment/page"), { 
-  ssr: false,
-  loading: () => <div className="p-6">Loading Salary Payment...</div>
-})
-const SettingsPage = dynamicImport(() => import("./settings/page"), { 
-  ssr: false,
-  loading: () => <div className="p-6">Loading Settings...</div>
-})
-const SystemsPage = dynamicImport(() => import("./systems/page"), { 
-  ssr: false,
-  loading: () => <div className="p-6">Loading Systems...</div>
-})
-const TasksPage = dynamicImport(() => import("./tasks/page"), { 
-  ssr: false,
-  loading: () => <div className="p-6">Loading Tasks...</div>
-})
 
 export default function HRDashboard() {
   const [activeSection, setActiveSection] = useState("overview")
@@ -184,13 +133,13 @@ export default function HRDashboard() {
         {/* Dashboard Content */}
         <div className="flex-1 overflow-auto bg-background">
           {activeSection === "overview" && <OverviewPage />}
-          {activeSection === "employees" && EmployeesPage && <EmployeesPage />}
-          {activeSection === "payroll" && PayrollPage && <PayrollPage />}
-          {activeSection === "salary-payment" && SalaryPaymentPage && <SalaryPaymentPage />}
-          {activeSection === "kpi" && KPIPage && <KPIPage />}
-          {activeSection === "tasks" && TasksPage && <TasksPage />}
-          {activeSection === "analytics" && AnalyticsPage && <AnalyticsPage />}
-          {activeSection === "settings" && SettingsPage && <SettingsPage />}
+          {activeSection === "employees" && <div className="p-6">Employees Page - Coming Soon</div>}
+          {activeSection === "payroll" && <div className="p-6">Payroll Page - Coming Soon</div>}
+          {activeSection === "salary-payment" && <div className="p-6">Salary Payment Page - Coming Soon</div>}
+          {activeSection === "kpi" && <div className="p-6">KPI Page - Coming Soon</div>}
+          {activeSection === "tasks" && <div className="p-6">Tasks Page - Coming Soon</div>}
+          {activeSection === "analytics" && <div className="p-6">Analytics Page - Coming Soon</div>}
+          {activeSection === "settings" && <div className="p-6">Settings Page - Coming Soon</div>}
         </div>
       </div>
     </div>
