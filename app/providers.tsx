@@ -20,9 +20,7 @@ export function Providers({ children }: ProvidersProps) {
   return (
     <MetaMaskProvider>
       <MetaMaskEthersSignerProvider initialMockChains={{
-        // Временно используем публичный RPC для тестирования
-        31337: "https://rpc.sepolia.org", // Sepolia testnet
-        // 31337: "http://127.0.0.1:8545", // Локальный Hardhat - закомментировано
+        31337: "http://127.0.0.1:8545", // Локальный Hardhat
       }}>
         <InMemoryStorageProvider>
           {children}
@@ -46,7 +44,7 @@ export const useFhevmContext = () => {
   const { storage: fhevmDecryptionSignatureStorage } = useInMemoryStorage();
 
   const sameChain = useRef((chainId: number | undefined) => {
-    return chainId === 11155111; // Sepolia testnet (11155111)
+    return chainId === 31337; // Локальный Hardhat
   });
 
   const sameSigner = useRef((ethersSigner: ethers.JsonRpcSigner | undefined) => {

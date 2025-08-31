@@ -35,8 +35,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'https://rpc.sepolia.org/:path*', // Временно используем публичный RPC для тестирования
-        // destination: 'http://127.0.0.1:8545/:path*', // Локальный Hardhat - закомментировано
+        destination: 'http://127.0.0.1:8545/:path*', // Локальный Hardhat
       },
     ];
   },

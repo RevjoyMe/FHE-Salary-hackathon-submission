@@ -191,8 +191,7 @@ async function resolve(
   let rpcUrl = typeof providerOrUrl === "string" ? providerOrUrl : undefined;
 
   const _mockChains: Record<number, string> = {
-    31337: "https://rpc.sepolia.org", // Временно используем публичный RPC для тестирования
-    // 31337: "http://127.0.0.1:8545", // Локальный Hardhat - закомментировано
+    31337: "http://127.0.0.1:8545", // Локальный Hardhat
     ...(mockChains ?? {}),
   };
 
